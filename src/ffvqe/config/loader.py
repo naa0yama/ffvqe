@@ -197,37 +197,37 @@ def _get_default_references() -> list[dict[str, Any]]:
             "name": "ABBB",
             "type": "Anime",
             "basefile": "./videos/source/ABBB_MPEG-2_1920x1080_30p.m2ts",
-            "basehash": "f005791ab9cabdc4468317d5d58becf3eb6228a49c6fad09e0923685712af769",
+            "basehash": "4be8aaf7d04d48c2adf312d19ccb3424e7f56b172369e2c6f8ff383f34adb710",
         },
         {
             "name": "ASintel",
             "type": "Anime",
             "basefile": "./videos/source/ASintel_MPEG-2_1920x1080_30p.m2ts",
-            "basehash": "8554804c935a382384eed9196ff88bd561767b6be1786aa4921087f265d92f3a",
+            "basehash": "20b9d945263dbcce130d8c12cd8924cc5b4a9fc363a202b58d1904a54c856cfb",
         },
         {
             "name": "AToS",
             "type": "Anime",
             "basefile": "./videos/source/AToS_MPEG-2_1920x1080_30p.m2ts",
-            "basehash": "ff6a0c366a3c631cf76d20c205cf505f964c9126551bf5bf10e8d99f9d04df52",
+            "basehash": "2631a3872f498792c8cd5dad912a9744b86c666109ddd9de5b8cf700970291de",
         },
         {
             "name": "NAir",
             "type": "Nature",
             "basefile": "./videos/source/NAir_MPEG-2_1920x1080_30p.m2ts",
-            "basehash": "aec5612c556567df8cc3b37010c2850f709054293f1d5d0b96c68b349c2a97a2",
+            "basehash": "e5caf79f3aaf71d22591596c7ec3611bb1ef4db492ef12b22ce97c3ab3dab47d",
         },
         {
             "name": "NArmy",
             "type": "Nature",
             "basefile": "./videos/source/NArmy_MPEG-2_1920x1080_30p.m2ts",
-            "basehash": "aef3503a79fcacf0e65e368416b0b0b85e54b8eb77e2613a4b750b59fb2b50d5",
+            "basehash": "7b4ec64d99bed15995e0b871c11939b559a8908be2005aa414aa4a590a5acda2",
         },
         {
             "name": "NNavy",
             "type": "Nature",
             "basefile": "./videos/source/NNavy_MPEG-2_1920x1080_30p.m2ts",
-            "basehash": "52409e9400315916bb191dfafe4edd415204671ae00e2ddb447671f4850876cb",
+            "basehash": "27bb5ca0e139cd4ee4e107f669f9f61d273ea325d644eac9af52c9cbcfa05c03",
         },
     ]
 
