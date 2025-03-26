@@ -284,6 +284,7 @@ def test_main_with_archive(mocker: MockerFixture) -> None:
     mock_args.archive = True
     mock_args.summary = False
     mock_args.encode = False
+    mock_args.encode_tv = False
     mock_args.config = "dummy_config.yml"  # 実際には存在しないダミーのパス
 
     # argparseのモック
@@ -305,11 +306,12 @@ def test_main_with_archive(mocker: MockerFixture) -> None:
     mock_config = {"configs": {"datafile": "dummy_datafile.json"}}
     mocker.patch("ffvqe.main.load_config", return_value=mock_config)
 
-    # sys.exitのモック
-    mock_exit = mocker.patch("sys.exit")
+    # SystemExit例外を発生させるsys.exitのモック
+    mock_exit = mocker.patch("sys.exit", side_effect=SystemExit)
 
-    # 関数の実行
-    main()
+    # 関数の実行と例外の検証
+    with pytest.raises(SystemExit):
+        main()
 
     # archiveが呼ばれたことを確認
     mock_archive.assert_called_once_with(config_path="dummy_config.yml", args=mock_args)
