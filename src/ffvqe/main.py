@@ -86,6 +86,11 @@ def create_argument_parser() -> argparse.ArgumentParser:
         action="store_true",
     )
     parser.add_argument(
+        "--encode-tv",
+        help="In this mode, sources are filtered according to references.type when measuring vmaf. (default: False)",
+        action="store_true",
+    )
+    parser.add_argument(
         "-fthreads",
         "--ffmpeg-threads",
         help="Set the number of threads to be used (default: 4)",
@@ -146,7 +151,7 @@ def main_encode(config: dict[str, Any], args: argparse.Namespace) -> None:
                     probe_timeout=int(float(__base_probe_log["format"]["duration"]) * 1.2),
                     ffmpeg_threads=args.ffmpeg_threads,
                 )
-                __vmaf_rsp = getvmaf(encode_cfg=__encode)
+                __vmaf_rsp = getvmaf(encode_cfg=__encode, tvflag=args.encode_tv)
                 __rapt = (
                     __encode_rep["elapsed_time"]
                     + __encode_rep["elapsed_prbt"]
@@ -277,7 +282,7 @@ def main() -> None:
     args = parser.parse_args()
 
     print(f"version: {__version__}")  # noqa: T201
-    if args.archive is True and args.encode is True:
+    if args.archive is True and (args.encode or args.encode_tv):
         sys.exit("\n\nCannot be specified together with '--encode' and '--archive'.")
 
     if args.archive:
@@ -289,7 +294,7 @@ def main() -> None:
         sys.exit("\n\n Summary done.")
 
     __configs: dict[str, Any] = load_config(configfile=args.config, args=args)
-    if args.encode:
+    if args.encode or args.encode_tv:
         main_encode(config=__configs, args=args)
         getcsv(datafile=__configs["configs"]["datafile"])
 

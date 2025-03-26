@@ -201,7 +201,12 @@ def encoding(
     }
 
 
-def getvmaf(encode_cfg: dict[str, Any], cpu_count: int | None = None) -> dict[str, Any]:
+def getvmaf(
+    encode_cfg: dict[str, Any],
+    cpu_count: int | None = None,
+    *,
+    tvflag: bool = False,
+) -> dict[str, Any]:
     """Calculate VMAF score for encoded video.
 
     Compares the encoded video with the original reference video to calculate
@@ -210,6 +215,7 @@ def getvmaf(encode_cfg: dict[str, Any], cpu_count: int | None = None) -> dict[st
     Args:
         encode_cfg: Dictionary containing encoding configuration.
         cpu_count: Number of CPU cores to use for VMAF calculation.
+        tvflag: Flag to enable TV mode for VMAF calculation.
 
     Returns:
         Dictionary containing VMAF calculation results including:
@@ -220,6 +226,12 @@ def getvmaf(encode_cfg: dict[str, Any], cpu_count: int | None = None) -> dict[st
         from os import cpu_count as os_cpu_count
 
         cpu_count = os_cpu_count()
+
+    __vf: str = ""
+    if tvflag and encode_cfg["infile"]["type"] == "Anime":
+        __vf = ",fieldmatch,yadif=0:-1:1"
+    if tvflag and encode_cfg["infile"]["type"] == "Jissha":
+        __vf = ",yadif=0:-1:0"
 
     __ffmpege_cmd: list[str] = [
         "ffmpeg",
@@ -234,7 +246,7 @@ def getvmaf(encode_cfg: dict[str, Any], cpu_count: int | None = None) -> dict[st
         "-lavfi",
         (
             "[0:v]settb=AVTB,setpts=PTS-STARTPTS[Distorted];"
-            "[1:v]settb=AVTB,setpts=PTS-STARTPTS[Reference];"
+            "[1:v]settb=AVTB,setpts=PTS-STARTPTS" + __vf + "[Reference];"
             "[Distorted][Reference]libvmaf=eof_action=endall:"
             "log_fmt=json:"
             f"log_fmt=json:log_path={encode_cfg['outfile']['filename']}_vmaf.json:"
