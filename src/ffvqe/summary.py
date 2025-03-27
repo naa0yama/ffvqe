@@ -64,6 +64,7 @@ def show_aggregated_results() -> None:
         """
         SELECT
             codec,
+            type,
             ROUND(AVG(outfile_size_kbyte), 3)        AS outfile_size_kbyte,
             ROUND(AVG(outfile_bit_rate_kbs), 3)      AS outfile_bit_rate_kbs,
             ROUND(AVG(enc_sec), 3)                   AS enc_sec,
@@ -87,7 +88,7 @@ def show_aggregated_results() -> None:
             ssim_mean >= 0.99 AND
             vmaf_mean >= 93.00 AND
             vmaf_mean <= 100.00
-        GROUP BY codec, outfile_options
+        GROUP BY codec, type, outfile_options
         ORDER BY pt DESC
         """,
     ).show()
