@@ -13,6 +13,108 @@ FFmpeg を利用して ソフトウェア、 Intel QSV エンコーダーで動�
 
 [bast-parameter-hunting.md](docs/bast-parameter-hunting/bast-parameter-hunting.md) に記載しています。
 
+抜粋すると、地上波放送で手軽にそれなりの圧縮率で、保存する場合は codec ごとに下記のパラメーターが有用
+
+|                  |  File size |   bitrate | encode time | compress_rate | MSSIM |   VMAF min/mean | GOP   | bf   | refs | I/P/B frames             |
+| :--------------- | ---------: | --------: | ----------: | ------------: | ----: | --------------: | :---- | :--- | :--- | :----------------------- |
+| libx264   CRF    | 56,135.262 | 3,741.727 |      32.682 |         0.710 | 0.997 | 87.255 / 95.318 | 250.0 | 3.0  | 4.0  | 26.0 / 1,015.0 / 2,639.0 |
+| libx265   CRF    | 50,252.294 | 3,349.594 |     102.439 |         0.741 | 0.997 | 86.860 / 95.175 | 250.0 | 3.0  | 1.0  | 21.0 /   916.0 / 2,727.0 |
+| libsvtav1 CRF    | 32,370.096 | 2,157.646 |      59.117 |         0.822 | 0.997 | 79.178 / 94.927 | 161.0 | 0.0  | 1.0  | 23.0 / 3,574.0 /     0.0 |
+|                  |            |           |             |               |       |                 |       |      |      |                          |
+| h264_qsv  LA_ICQ | 41,406.853 | 2,759.996 |       9.276 |         0.772 | 0.996 | 78.231 / 93.923 | 256.0 | 5.0  | 8.0  | 15.0 /   225.0 / 3,357.0 |
+| hevc_qsv  ICQ    | 38,546.974 | 2,569.370 |      30.499 |         0.787 | 0.997 | 78.858 / 94.378 | 248.0 | 5.0  | 1.0  | 15.0 /     0.0 / 3,582.0 |
+| av1_qsv   ICQ    | 43,167.632 | 2,877.362 |      32.293 |         0.761 | 0.997 | 80.600 / 94.959 | 248.0 | 0.0  | 1.0  | 15.0 / 3,582.0 /     0.0 |
+
+### libx264
+
+```bash
+ffmpeg -y -threads 4  -hide_banner -ignore_unknown -fflags +discardcorrupt+genpts -analyzeduration 30M -probesize 100M \
+  -map 0:v -c:v mpeg2video -i base.mkv \
+  -c:v libx264 -preset:v medium -crf 23 \
+  -vf yadif=mode=send_frame:parity=auto:deint=all \
+  -color_primaries bt709 -color_trc bt709 -colorspace bt709 -color_range tv -max_muxing_queue_size 4000 \
+  -movflags faststart -f mkv \
+  \
+  -map 0:a -c:a libopus -b:a 128k -ar 48k -ac 2 \
+  out.mkv
+
+```
+
+### libx265
+
+```bash
+ffmpeg -y -threads 4  -hide_banner -ignore_unknown -fflags +discardcorrupt+genpts -analyzeduration 30M -probesize 100M \
+  -map 0:v -c:v mpeg2video -i base.mkv \
+  -c:v libx265 -preset:v medium -crf 23 -tag:v hvc1 \
+  -vf yadif=mode=send_frame:parity=auto:deint=all \
+  -color_primaries bt709 -color_trc bt709 -colorspace bt709 -color_range tv -max_muxing_queue_size 4000 \
+  -movflags faststart -f mkv \
+  \
+  -map 0:a -c:a libopus -b:a 128k -ar 48k -ac 2 \
+  out.mkv
+
+```
+
+### libsvtav1
+
+```bash
+ffmpeg -y -threads 4 -hide_banner -ignore_unknown -fflags +discardcorrupt+genpts -analyzeduration 30M -probesize 100M \
+  -map 0:v -c:v mpeg2video -i base.mkv \
+  -c:v libsvtav1 -preset:v 6 -crf 31 \
+  -vf yadif=mode=send_frame:parity=auto:deint=all \
+  -color_primaries bt709 -color_trc bt709 -colorspace bt709 -color_range tv -max_muxing_queue_size 4000 \
+  -movflags faststart -f mkv \
+  \
+  -map 0:a -c:a libopus -b:a 128k -ar 48k -ac 2 \
+  out.mkv
+
+```
+
+### h264_qsv
+
+```bash
+ffmpeg -y -threads 4 -hide_banner -ignore_unknown -fflags +discardcorrupt+genpts -analyzeduration 30M -probesize 100M \
+  -hwaccel_output_format qsv -hwaccel qsv -c:v mpeg2_qsv -i base.mkv \
+  -c:v h264_qsv -preset:v veryslow -global_quality 25 -look_ahead 1 -bf 15 -refs 8 \
+  -vf vpp_qsv=deinterlace=advanced,setfield=mode=prog \
+  -color_primaries bt709 -color_trc bt709 -colorspace bt709 -color_range tv -max_muxing_queue_size 4000 \
+  -movflags faststart -f mkv \
+  \
+  -map 0:a -c:a libopus -b:a 128k -ar 48k -ac 2 \
+  out.mkv
+
+```
+
+### hevc_qsv
+
+```bash
+ffmpeg -y -threads 4 -hide_banner -ignore_unknown -fflags +discardcorrupt+genpts -analyzeduration 30M -probesize 100M \
+  -hwaccel_output_format qsv -hwaccel qsv -c:v mpeg2_qsv -i base.mkv \
+  -c:v hevc_qsv -preset:v veryslow -global_quality 21 -bf 15 -refs 8  -tag:v hvc1 \
+  -vf vpp_qsv=deinterlace=advanced,format=p010le,setfield=mode=prog \
+  -color_primaries bt709 -color_trc bt709 -colorspace bt709 -color_range tv -max_muxing_queue_size 4000 \
+  -movflags faststart -f mkv \
+  \
+  -map 0:a -c:a libopus -b:a 128k -ar 48k -ac 2 \
+  out.mkv
+
+```
+
+### av1_qsv
+
+```bash
+ffmpeg -y -threads 4 -hide_banner -ignore_unknown -fflags +discardcorrupt+genpts -analyzeduration 30M -probesize 100M \
+  -hwaccel_output_format qsv -hwaccel qsv -c:v mpeg2_qsv -i base.mkv \
+  -c:v av1_qsv -preset:v veryslow -global_quality 24 \
+  -vf vpp_qsv=deinterlace=advanced,format=p010le,setfield=mode=prog \
+  -color_primaries bt709 -color_trc bt709 -colorspace bt709 -color_range tv -max_muxing_queue_size 4000 \
+  -movflags faststart -f mkv \
+  \
+  -map 0:a -c:a libopus -b:a 128k -ar 48k -ac 2 \
+  out.mkv
+
+```
+
 ## 利用方法
 
 レポジトリーを clone して VSCode Dev Containers で起動する

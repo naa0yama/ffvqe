@@ -41,32 +41,32 @@ Proxmox VE の仮想マシンに PCIE パススルーし、計測している VM
 | av1_qsv ICQ     | 69,171.718 | 4,611.312 |      12.597 |         0.730 | 0.997 | 82.761 / 95.985 | 248.0 | 0.0  | 1.0  | 15.0 / 3582.0 / 0.0    | -global_quality 24                                          |
 |                 | 70,849.782 | 4,723.186 |      12.628 |         0.723 | 0.997 | 83.577 / 96.340 | 248.0 | 0.0  | 1.0  | 15.0 / 3582.0 / 0.0    | -global_quality 24 -vf vpp_qsv=format=p010le                |
 
-### h264_qsv best
+### 地上波放送
 
-```bash
-ffmpeg -y -threads 4 -hide_banner -ignore_unknown -fflags +discardcorrupt+genpts -analyzeduration 30M -probesize 100M \
-    -hwaccel_output_format qsv \
-    -map 0:v -hwaccel qsv -c:v mpeg2_qsv -i base.mkv \
-    -c:v h264_qsv -preset:v veryslow \
-    -global_quality 25 -look_ahead 1 -aspect 16:9 -bf 15 -refs 8 \
-    -color_range tv -color_primaries bt709 -color_trc bt709 -colorspace bt709 -max_muxing_queue_size 4000 \
-    -movflags faststart -f mkv \
-    -map 0:a -c:a libopus -b:a 128k -ar 48k -ac 2 \
-    \
-    out.mkv
+地上波放送をサンプリングした参考値
 
-```
+|                  |  File size |   bitrate | encode time | compress_rate | MSSIM |   VMAF min/mean | GOP   | bf   | refs | I/P/B frames             | options                                                                                             |
+| :--------------- | ---------: | --------: | ----------: | ------------: | ----: | --------------: | :---- | :--- | :--- | :----------------------- | :-------------------------------------------------------------------------------------------------- |
+| h264_qsv  CQP    | 32,774.073 | 2,184.574 |       9.032 |         0.818 | 0.996 | 77.264 / 93.832 | 256.0 | 5.0  | 8.0  | 15.0 /   225.0 / 3,357.0 | -q:v 22 -bf 15 -refs 8 -vf vpp_qsv=deinterlace=advanced,setfield=mode=prog                          |
+| h264_qsv  ICQ    | 41,406.853 | 2,759.996 |       9.278 |         0.772 | 0.996 | 78.231 / 93.923 | 256.0 | 5.0  | 8.0  | 15.0 /   225.0 / 3,357.0 | -global_quality 25 -bf 15 -refs 8 -vf vpp_qsv=deinterlace=advanced,setfield=mode=prog               |
+| h264_qsv  LA_ICQ | 41,406.853 | 2,759.996 |       9.276 |         0.772 | 0.996 | 78.231 / 93.923 | 256.0 | 5.0  | 8.0  | 15.0 /   225.0 / 3,357.0 | -global_quality 25 -look_ahead 1 -bf 15 -refs 8 -vf vpp_qsv=deinterlace=advanced,setfield=mode=prog |
+| hevc_qsv  ICQ    | 38,546.974 | 2,569.370 |      30.499 |         0.787 | 0.997 | 78.858 / 94.378 | 248.0 | 5.0  | 1.0  | 15.0 /     0.0 / 3,582.0 | -global_quality 21 -bf 15 -refs 8 -vf vpp_qsv=deinterlace=advanced,format=p010le,setfield=mode=prog |
+| libsvtav1 CRF    | 32,370.096 | 2,157.646 |      59.117 |         0.822 | 0.997 | 79.178 / 94.927 | 161.0 | 0.0  | 1.0  | 23.0 / 3,574.0 /     0.0 | -crf 31 -vf yadif=0:-1:0                                                                            |
+| av1_qsv   ICQ    | 43,167.632 | 2,877.362 |      32.293 |         0.761 | 0.997 | 80.600 / 94.959 | 248.0 | 0.0  | 1.0  | 15.0 / 3,582.0 /     0.0 | -global_quality 24 -vf vpp_qsv=deinterlace=advanced,format=p010le,setfield=mode=prog                |
+| av1_qsv   CQP    | 49,404.766 | 3,293.102 |      32.105 |         0.728 | 0.997 | 80.343 / 95.263 | 248.0 | 0.0  | 1.0  | 15.0 / 3,582.0 /     0.0 | -q:v 53 -vf vpp_qsv=deinterlace=advanced,format=p010le,setfield=mode=prog                           |
+| libx265   CRF    | 50,252.294 | 3,349.594 |     102.439 |         0.741 | 0.997 | 86.860 / 95.175 | 250.0 | 3.0  | 1.0  | 21.0 /   916.0 / 2,727.0 | -crf 23 -vf yadif=0:-1:0                                                                            |
+| libx264   CRF    | 56,135.262 | 3,741.727 |      32.682 |         0.710 | 0.997 | 87.255 / 95.318 | 250.0 | 3.0  | 4.0  | 26.0 / 1,015.0 / 2,639.0 | -crf 23 -vf yadif=0:-1:0                                                                            |
 
-### hevc_qsv best
-
-hevc_qsv はファイルサイズの削減更に進み、画質を落とさず容量削減が可能。
-また、 10-Bit カラーの Main10 にも対応するためグラデーションなど状況でも問題ない。
-
-```bash
-
-```
-
-### av1_qsv best
+* 条件
+  * アニメ、実写をランダムに5本選出
+  * 本編映像で2分間を抜き、 MPEG2-TS 以外のデータを削除
+  * エンコード時 にインターレースを解除する
+    * ソフトウェアエンコードは `-vf yadif=0:-1:0`
+    * ハードウエアエンコードは `-vf vpp_qsv=deinterlace=advanced,setfield=mode=prog`
+      * `setfield=mode=prog` は `vpp_qsv` のバグでインターレース解除後でもインターレースとして報告してしまうため強制的に progressive として書き出している
+  * VMAF 計測時はソース映像に下記フィルターを適用
+    * アニメ: `fieldmatch,yadif=0:-1:1`
+    * 実写: `yadif=0:-1:0`
 
 ## 画質探索の極意
 
