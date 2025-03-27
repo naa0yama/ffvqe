@@ -1,0 +1,237 @@
+---
+configs:
+  references:
+    - name: A01
+      type: Anime
+      basefile: videos/source/2025-03-01T220000_A01.mkv
+      basehash: a50f749f3d213091bd98713f3d99a61616687ff73bed80a6a57760520fe2e072
+    - name: A02
+      type: Anime
+      basefile: videos/source/2025-03-12T233000_A02.mkv
+      basehash: dcce099de39b247aca2a804a162c5c83ece35af1158bd4cb7f373774d08f53b0
+    - name: A03
+      type: Anime
+      basefile: videos/source/2025-03-16T000000_A03.mkv
+      basehash: c132740aad0a64280cd00752e8b6567ff1b1e75b0df0e6c7a9e33cc19e421100
+    - name: A04
+      type: Anime
+      basefile: videos/source/2025-03-17T230000_A04.mkv
+      basehash: 99f34d1430efbc4fd68cd63461bb79bfeb292c4414f6a7732e69d527857220c1
+    - name: A05
+      type: Anime
+      basefile: videos/source/2025-03-18T000000_A05.mkv
+      basehash: 12ecf8c8a3e1661803ed2446ba88edad250937d0132234511476c9f319241945
+    - name: J01
+      type: Jissha
+      basefile: videos/source/2025-03-19T010000_J01.mkv
+      basehash: 97ca579b4a8c503ae76039be244a58a4b3cf7b049dc2b13efa568eb3bc1bfffa
+    - name: J02
+      type: Jissha
+      basefile: videos/source/2025-03-19T030500_J02.mkv
+      basehash: 1ad397f1c7ea53ef94539cd4c2a899e3e212545d419c2f06ba45389b1b8d1150
+    - name: J03
+      type: Jissha
+      basefile: videos/source/2025-03-19T041500_J03.mkv
+      basehash: fc81f16c2a37b0b11429bbd8afde533544ee14744ede237c48007075942aafa4
+    - name: J04
+      type: Jissha
+      basefile: videos/source/2025-03-19T044500_J04.mkv
+      basehash: cf73e925fe07a9ce6c7e2dc2ffc353b5f6d9c6f8e31a6cfa1be1915fe5cb36f3
+    - name: J05
+      type: Jissha
+      basefile: videos/source/2025-03-19T113000_J05.mkv
+      basehash: 7f70787400e45b64f67531fec71aa8b3ecd55ba10970af70848bc40fa0aa3d3d
+  datafile: assets/FieldTesting_20250327/data73fda489aa2b.json
+  patterns:
+    - codec: libx264
+      type: CRF
+      comments: ''
+      presets:
+        - medium
+      infile:
+        option: ''
+      outfile:
+        options:
+          - -crf 23 -vf yadif=0:-1:0
+      hwaccels: ''
+    - codec: libx265
+      type: CRF
+      comments: ''
+      presets:
+        - medium
+      infile:
+        option: ''
+      outfile:
+        options:
+          - -crf 23 -vf yadif=0:-1:0
+      hwaccels: ''
+    - codec: libsvtav1
+      type: CRF
+      comments: ''
+      presets:
+        - '6'
+      infile:
+        option: ''
+      outfile:
+        options:
+          - -crf 31 -vf yadif=0:-1:0
+      hwaccels: ''
+    - codec: h264_qsv
+      type: CQP
+      comments: ''
+      presets:
+        - veryslow
+      infile:
+        option: -hwaccel qsv -c:v mpeg2_qsv
+      outfile:
+        options:
+          - -q:v 22 -bf 15 -refs 8 -vf vpp_qsv=deinterlace=advanced,setfield=mode=prog
+      hwaccels: -hwaccel_output_format qsv
+    - codec: h264_qsv
+      type: ICQ
+      comments: ''
+      presets:
+        - veryslow
+      infile:
+        option: -hwaccel qsv -c:v mpeg2_qsv
+      outfile:
+        options:
+          - -global_quality 25 -bf 15 -refs 8 -vf vpp_qsv=deinterlace=advanced,setfield=mode=prog
+      hwaccels: -hwaccel_output_format qsv
+    - codec: h264_qsv
+      type: LA_ICQ
+      comments: ''
+      presets:
+        - veryslow
+      infile:
+        option: -hwaccel qsv -c:v mpeg2_qsv
+      outfile:
+        options:
+          - -global_quality 25 -look_ahead 1 -bf 15 -refs 8 -vf vpp_qsv=deinterlace=advanced,setfield=mode=prog
+      hwaccels: -hwaccel_output_format qsv
+    - codec: hevc_qsv
+      type: CQP
+      comments: ''
+      presets:
+        - veryslow
+      infile:
+        option: -hwaccel qsv -c:v mpeg2_qsv
+      outfile:
+        options:
+          - -q:v 20 -bf 15 -refs 8 -vf vpp_qsv=deinterlace=advanced,format=p010le,setfield=mode=prog
+      hwaccels: -hwaccel_output_format qsv
+    - codec: hevc_qsv
+      type: ICQ
+      comments: ''
+      presets:
+        - veryslow
+      infile:
+        option: -hwaccel qsv -c:v mpeg2_qsv
+      outfile:
+        options:
+          - -global_quality 21 -bf 15 -refs 8 -vf vpp_qsv=deinterlace=advanced,format=p010le,setfield=mode=prog
+      hwaccels: -hwaccel_output_format qsv
+    - codec: av1_qsv
+      type: CQP
+      comments: ''
+      presets:
+        - veryslow
+      infile:
+        option: -hwaccel qsv -c:v mpeg2_qsv
+      outfile:
+        options:
+          - -q:v 53 -vf vpp_qsv=deinterlace=advanced,format=p010le,setfield=mode=prog
+      hwaccels: -hwaccel_output_format qsv
+    - codec: av1_qsv
+      type: ICQ
+      comments: ''
+      presets:
+        - veryslow
+      infile:
+        option: -hwaccel qsv -c:v mpeg2_qsv
+      outfile:
+        options:
+          - -global_quality 24 -vf vpp_qsv=deinterlace=advanced,format=p010le,setfield=mode=prog
+      hwaccels: -hwaccel_output_format qsv
+  environment:
+    ffmpege:
+      program_version:
+        version: n7.1
+        copyright: Copyright (c) 2007-2024 the FFmpeg developers
+        compiler_ident: gcc 13 (Ubuntu 13.3.0-6ubuntu2~24.04)
+        configuration: --enable-avisynth --enable-libaribb24 --enable-libass --enable-libdav1d --enable-libfreetype --enable-libmp3lame --enable-libopus --enable-libsvtav1 --enable-libvmaf --enable-libvpl
+          --enable-libvpx --enable-libx264 --enable-libx265 --enable-vaapi --enable-gpl --enable-nonfree --enable-version3 --disable-debug --disable-doc --disable-ffplay --disable-shared --enable-small
+          --enable-static --enable-stripping --extra-libs='-lpthread -lm' --pkg-config-flags=--static --extra-cflags=-fopenmp --extra-ldflags='-fopenmp -Wl,--allow-multiple-definition -Wl,-z,stack-size=2097152'
+          --toolchain=hardened
+      library_versions:
+        - name: libavutil
+          major: 59
+          minor: 39
+          micro: 100
+          version: 3876708
+          ident: Lavu59.39.100
+        - name: libavcodec
+          major: 61
+          minor: 19
+          micro: 100
+          version: 4002660
+          ident: Lavc61.19.100
+        - name: libavformat
+          major: 61
+          minor: 7
+          micro: 100
+          version: 3999588
+          ident: Lavf61.7.100
+        - name: libavdevice
+          major: 61
+          minor: 3
+          micro: 100
+          version: 3998564
+          ident: Lavd61.3.100
+        - name: libavfilter
+          major: 10
+          minor: 4
+          micro: 100
+          version: 656484
+          ident: Lavfi10.4.100
+        - name: libswscale
+          major: 8
+          minor: 3
+          micro: 100
+          version: 525156
+          ident: SwS8.3.100
+        - name: libswresample
+          major: 5
+          minor: 3
+          micro: 100
+          version: 328548
+          ident: SwR5.3.100
+        - name: libpostproc
+          major: 58
+          minor: 3
+          micro: 100
+          version: 3801956
+          ident: postproc58.3.100
+    packages:
+      avisynth: v3.7.3
+      ffmpeg: n7.1
+      fontconfig: 2.15.0
+      igdgmm: intel-gmmlib-22.6.0
+      igfxcmrt: intel-media-24.3.4
+      libaribb24: 1.0.3
+      libass: 0.17.1
+      libdav1d: 1.5.1
+      libfreetype: 26.1.20
+      libfribidi: 1.0.13
+      liblsmash: 315b4747d759e336ef30b18e93f2e676810e5a73
+      liblsmashsource: fa20c138f7dfe6c28115529c5723ffd1c45c340b
+      libmfx-gen: intel-onevpl-24.3.4
+      libopus: v1.5.2
+      libsvtav1: v2.3.0
+      libva: 2.22.0
+      libvmaf: v3.0.0
+      libvpl: v2.14.0
+      libvpx: v1.15.0
+      libx264: 31e19f92f00c7003fa115047ce50978bc98c3a0d
+      libx265: '4.0'
+      obuparse: 918524abdc19b6582d853c03373d8e2e0b9f11ee
