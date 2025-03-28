@@ -2,14 +2,14 @@
 
 [[package]]
 name = "bokeh"
-version = "3.7.1"
+version = "3.7.2"
 description = "Interactive plots and applications in the browser from Python"
 optional = false
 python-versions = ">=3.10"
 groups = ["main"]
 files = [
-    {file = "bokeh-3.7.1-py3-none-any.whl", hash = "sha256:bba8aa584c9c9e76e5bb59f0156f9bc7b2c6ba9c4038e634455fd707bb56f920"},
-    {file = "bokeh-3.7.1.tar.gz", hash = "sha256:4a96b08d88a3dc648bcfc209a9dee216cff6931eb787d84aa90298c8e06a5efe"},
+    {file = "bokeh-3.7.2-py3-none-any.whl", hash = "sha256:efd9172a90cc233c1c21ef4813d58a8a6f97ee63c8e2f1b4f2389a64fcef0722"},
+    {file = "bokeh-3.7.2.tar.gz", hash = "sha256:80c21885cec276431acd4db92f831c71eb999ea995470ce777e0c577b0cfc1d8"},
 ]
 
 [package.dependencies]
