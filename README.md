@@ -28,6 +28,18 @@ FFmpeg を利用して ソフトウェア、 Intel QSV エンコーダーで動�
 ### libx264
 
 ```bash
+
+## プログレッシブ映像の場合
+ffmpeg -y -threads 4  -hide_banner -ignore_unknown -fflags +discardcorrupt+genpts -analyzeduration 30M -probesize 100M \
+  -map 0:v -c:v mpeg2video -i base.mkv \
+  -c:v libx264 -preset:v medium -crf 23 \
+  -color_primaries bt709 -color_trc bt709 -colorspace bt709 -color_range tv -max_muxing_queue_size 4000 \
+  -movflags faststart -f mkv \
+  \
+  -map 0:a -c:a libopus -b:a 128k -ar 48k -ac 2 \
+  out.mkv
+
+## インターレースを解除する場合
 ffmpeg -y -threads 4  -hide_banner -ignore_unknown -fflags +discardcorrupt+genpts -analyzeduration 30M -probesize 100M \
   -map 0:v -c:v mpeg2video -i base.mkv \
   -c:v libx264 -preset:v medium -crf 23 \
@@ -43,6 +55,17 @@ ffmpeg -y -threads 4  -hide_banner -ignore_unknown -fflags +discardcorrupt+genpt
 ### libx265
 
 ```bash
+## プログレッシブ映像の場合
+ffmpeg -y -threads 4  -hide_banner -ignore_unknown -fflags +discardcorrupt+genpts -analyzeduration 30M -probesize 100M \
+  -map 0:v -c:v mpeg2video -i base.mkv \
+  -c:v libx265 -preset:v medium -crf 23 -tag:v hvc1 \
+  -color_primaries bt709 -color_trc bt709 -colorspace bt709 -color_range tv -max_muxing_queue_size 4000 \
+  -movflags faststart -f mkv \
+  \
+  -map 0:a -c:a libopus -b:a 128k -ar 48k -ac 2 \
+  out.mkv
+
+## インターレースを解除する場合
 ffmpeg -y -threads 4  -hide_banner -ignore_unknown -fflags +discardcorrupt+genpts -analyzeduration 30M -probesize 100M \
   -map 0:v -c:v mpeg2video -i base.mkv \
   -c:v libx265 -preset:v medium -crf 23 -tag:v hvc1 \
@@ -58,6 +81,17 @@ ffmpeg -y -threads 4  -hide_banner -ignore_unknown -fflags +discardcorrupt+genpt
 ### libsvtav1
 
 ```bash
+## プログレッシブ映像の場合
+ffmpeg -y -threads 4 -hide_banner -ignore_unknown -fflags +discardcorrupt+genpts -analyzeduration 30M -probesize 100M \
+  -map 0:v -c:v mpeg2video -i base.mkv \
+  -c:v libsvtav1 -preset:v 6 -crf 31 \
+  -color_primaries bt709 -color_trc bt709 -colorspace bt709 -color_range tv -max_muxing_queue_size 4000 \
+  -movflags faststart -f mkv \
+  \
+  -map 0:a -c:a libopus -b:a 128k -ar 48k -ac 2 \
+  out.mkv
+
+## インターレースを解除する場合
 ffmpeg -y -threads 4 -hide_banner -ignore_unknown -fflags +discardcorrupt+genpts -analyzeduration 30M -probesize 100M \
   -map 0:v -c:v mpeg2video -i base.mkv \
   -c:v libsvtav1 -preset:v 6 -crf 31 \
@@ -73,6 +107,17 @@ ffmpeg -y -threads 4 -hide_banner -ignore_unknown -fflags +discardcorrupt+genpts
 ### h264_qsv
 
 ```bash
+## プログレッシブ映像の場合
+ffmpeg -y -threads 4 -hide_banner -ignore_unknown -fflags +discardcorrupt+genpts -analyzeduration 30M -probesize 100M \
+  -hwaccel_output_format qsv -hwaccel qsv -c:v mpeg2_qsv -i base.mkv \
+  -c:v h264_qsv -preset:v veryslow -global_quality 25 -look_ahead 1 -bf 15 -refs 8 \
+  -color_primaries bt709 -color_trc bt709 -colorspace bt709 -color_range tv -max_muxing_queue_size 4000 \
+  -movflags faststart -f mkv \
+  \
+  -map 0:a -c:a libopus -b:a 128k -ar 48k -ac 2 \
+  out.mkv
+
+## インターレースを解除する場合
 ffmpeg -y -threads 4 -hide_banner -ignore_unknown -fflags +discardcorrupt+genpts -analyzeduration 30M -probesize 100M \
   -hwaccel_output_format qsv -hwaccel qsv -c:v mpeg2_qsv -i base.mkv \
   -c:v h264_qsv -preset:v veryslow -global_quality 25 -look_ahead 1 -bf 15 -refs 8 \
@@ -88,6 +133,18 @@ ffmpeg -y -threads 4 -hide_banner -ignore_unknown -fflags +discardcorrupt+genpts
 ### hevc_qsv
 
 ```bash
+## プログレッシブ映像の場合
+ffmpeg -y -threads 4 -hide_banner -ignore_unknown -fflags +discardcorrupt+genpts -analyzeduration 30M -probesize 100M \
+  -hwaccel_output_format qsv -hwaccel qsv -c:v mpeg2_qsv -i base.mkv \
+  -c:v hevc_qsv -preset:v veryslow -global_quality 21 -bf 15 -refs 8  -tag:v hvc1 \
+  -vf vpp_qsv=format=p010le \
+  -color_primaries bt709 -color_trc bt709 -colorspace bt709 -color_range tv -max_muxing_queue_size 4000 \
+  -movflags faststart -f mkv \
+  \
+  -map 0:a -c:a libopus -b:a 128k -ar 48k -ac 2 \
+  out.mkv
+
+## インターレースを解除する場合
 ffmpeg -y -threads 4 -hide_banner -ignore_unknown -fflags +discardcorrupt+genpts -analyzeduration 30M -probesize 100M \
   -hwaccel_output_format qsv -hwaccel qsv -c:v mpeg2_qsv -i base.mkv \
   -c:v hevc_qsv -preset:v veryslow -global_quality 21 -bf 15 -refs 8  -tag:v hvc1 \
@@ -103,6 +160,18 @@ ffmpeg -y -threads 4 -hide_banner -ignore_unknown -fflags +discardcorrupt+genpts
 ### av1_qsv
 
 ```bash
+## プログレッシブ映像の場合
+ffmpeg -y -threads 4 -hide_banner -ignore_unknown -fflags +discardcorrupt+genpts -analyzeduration 30M -probesize 100M \
+  -hwaccel_output_format qsv -hwaccel qsv -c:v mpeg2_qsv -i base.mkv \
+  -c:v av1_qsv -preset:v veryslow -global_quality 24 \
+  -vf vpp_qsv=format=p010le \
+  -color_primaries bt709 -color_trc bt709 -colorspace bt709 -color_range tv -max_muxing_queue_size 4000 \
+  -movflags faststart -f mkv \
+  \
+  -map 0:a -c:a libopus -b:a 128k -ar 48k -ac 2 \
+  out.mkv
+
+## インターレースを解除する場合
 ffmpeg -y -threads 4 -hide_banner -ignore_unknown -fflags +discardcorrupt+genpts -analyzeduration 30M -probesize 100M \
   -hwaccel_output_format qsv -hwaccel qsv -c:v mpeg2_qsv -i base.mkv \
   -c:v av1_qsv -preset:v veryslow -global_quality 24 \
