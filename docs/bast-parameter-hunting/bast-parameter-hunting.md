@@ -71,6 +71,25 @@ Proxmox VE の仮想マシンに PCIE パススルーし、計測している VM
 
 [Per-Title Encode Optimization. delivering the same or better… | by Netflix Technology Blog | Netflix TechBlog](https://netflixtechblog.com/per-title-encode-optimization-7e99442b62a2)
 
+葬送のフリーレン 1話の各社配信ビットレート
+
+|          codec | Amazon | Abema | Netflix |
+| -------------: | -----: | ----: | ------: |
+| h264  720p min |    716 |       |         |
+| h264  720p max |   1198 |  2344 |         |
+| h264 1080p min |   1624 |       |         |
+| h264 1080p max |   4138 |  5176 |    4947 |
+|                |        |       |         |
+| hevc  720p min |    452 |       |         |
+| hevc  720p max |    642 |       |         |
+| hevc 1080p min |    798 |       |         |
+| hevc 1080p max |   2649 |       |         |
+|                |        |       |         |
+| av1   720p min |        |       |         |
+| av1   720p max |        |       |     350 |
+| av1  1080p min |        |       |     673 |
+| av1  1080p max |        |       |    1352 |
+
 ### 地上波放送
 
 地上波放送をサンプリングした参考値
