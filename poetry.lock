@@ -986,18 +986,21 @@ files = [
 
 [[package]]
 name = "nuitka"
-version = "2.7.3"
+version = "2.7.14"
 description = "Python compiler with full language support and CPython compatibility"
 optional = false
 python-versions = "*"
 groups = ["dev"]
 files = [
-    {file = "Nuitka-2.7.3.tar.gz", hash = "sha256:bd3dd12c5f0dfec0208f88c14ef3bbfc4ba3495eafc62c31b4e1f71171536e47"},
+    {file = "Nuitka-2.7.14.tar.gz", hash = "sha256:88233ed175d6d2abb2e1d5fa3c2e28b2fac604764ddc319c614325ff87c77117"},
 ]
 
 [package.dependencies]
 ordered-set = ">=4.1.0"
 zstandard = ">=0.15"
+
+[package.extras]
+build-wheel = ["setuptools (>=42)", "toml", "wheel"]
 
 [[package]]
 name = "numpy"
@@ -2168,4 +2171,4 @@ cffi = ["cffi (>=1.11)"]
 [metadata]
 lock-version = "2.1"
 python-versions = "~=3.12"
-content-hash = "8a2056e91a08269ed0d59113c4a1ed9e59fe7d36895f4d360ef224e741fb46f8"
+content-hash = "d5cb0477123c091fe96e9b70093bdb673d39c16153df08ab3deeb96650908588"
