@@ -18,7 +18,7 @@ exclude: |
 
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v5.0.0
+    rev: v6.0.0
     hooks:
       - id: trailing-whitespace
         args: [--markdown-linebreak-ext=md]
@@ -40,7 +40,7 @@ repos:
         args: ["-c=.yamllint.yml"]
 
   - repo: https://github.com/biomejs/pre-commit
-    rev: "v1.9.4"
+    rev: "v2.2.4"
     hooks:
       - id: biome-check
         additional_dependencies: ["@biomejs/biome@1.8.3"]

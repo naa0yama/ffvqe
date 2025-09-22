@@ -30,7 +30,7 @@ def check_json_data(datafile: str) -> bool:
     return data != []
 
 
-def create_duckdb_connection() -> duckdb.DuckDBPyConnection:
+def create_duckdb_connection() -> duckdb.DuckDBPyConnection:  # type: ignore[no-any-unimported]
     """Create a DuckDB connection.
 
     Returns:
@@ -39,7 +39,7 @@ def create_duckdb_connection() -> duckdb.DuckDBPyConnection:
     return duckdb.connect(database=":memory:")
 
 
-def create_temporary_table(connection: duckdb.DuckDBPyConnection, datafile: str) -> None:
+def create_temporary_table(connection: duckdb.DuckDBPyConnection, datafile: str) -> None:  # type: ignore[no-any-unimported]
     """Create a temporary table from JSON data.
 
     Args:
@@ -55,7 +55,7 @@ def create_temporary_table(connection: duckdb.DuckDBPyConnection, datafile: str)
     )
 
 
-def getcsv(datafile: str, db_connection: duckdb.DuckDBPyConnection | None = None) -> None:
+def getcsv(datafile: str, db_connection: duckdb.DuckDBPyConnection | None = None) -> None:  # type: ignore[no-any-unimported]
     """Generate CSV files from JSON data.
 
     Processes the JSON data file and generates three CSV files:

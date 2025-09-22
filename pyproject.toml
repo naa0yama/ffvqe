@@ -165,6 +165,10 @@ default-section = "third-party"
 [tool.mypy]
 # Ref: https://mypy.readthedocs.io/en/stable/config_file.html?highlight=pyproject
 
+python_version = "3.12"  # Pythonバージョンと一致させる
+cache_dir = ".mypy_cache"
+incremental = true
+
 ## Import discovery
 ignore_missing_imports = true
 warn_unused_configs = true
