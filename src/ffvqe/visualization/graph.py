@@ -452,7 +452,7 @@ class GraphVisualizer:
         )
 
         # カテゴリカルなX軸の設定
-        frame_plot.xgrid.grid_line_color = None  # type: ignore[attr-defined]
+        frame_plot.xgrid.grid_line_color = None
 
         # 積み上げ棒グラフの描画
         frame_plot.vbar_stack(
@@ -492,8 +492,8 @@ class GraphVisualizer:
         )
 
         range_tool_plot.add_tools(range_tool)
-        range_tool_plot.yaxis.visible = False  # type: ignore[attr-defined]
-        range_tool_plot.xgrid.visible = False  # type: ignore[attr-defined]
+        range_tool_plot.yaxis.visible = False
+        range_tool_plot.xgrid.visible = False
 
         self.size_plot = size_plot
         self.vmaf_plot = vmaf_plot
