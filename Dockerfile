@@ -1,7 +1,7 @@
 #- -------------------------------------------------------------------------------------------------
 #- Runner
 #-
-FROM ghcr.io/naa0yama/join_logo_scp_trial:v25.06.15-bata1-ubuntu2404
+FROM ghcr.io/naa0yama/join_logo_scp_trial:v25.06.15-bata1-ubuntu2404@sha256:350be7fdf12f897ce48e0358516515dee931dafed4b6a52c057372d902897d2b
 ARG DEBIAN_FRONTEND=noninteractive \
     DEFAULT_USERNAME=vscode \
     \
