@@ -52,7 +52,7 @@ types-requests = "^2.32.0.20250306"
 
 [tool.poetry.group.tests.dependencies]
 pytest = "^8.3.5"
-pytest-cov = "^6.0.0"
+pytest-cov = "^7.0.0"
 pytest-mock = "^3.14.0"
 
 [tool.ruff]
