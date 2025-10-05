@@ -2,11 +2,11 @@
 
 [TMPGEnc Video Mastering Works 8](https://tmpgenc.pegasys-inc.com/ja/product/tvmw8.html) が発売され、 AV1 に対応したため、こちらでも簡易テストを実施し自分の指標を作成した。
 
-* Version: 8.0.2.3
+- Version: 8.0.2.3
 
 ## 設定
 
-FFmpeg に搭載されていた libsvtav1 を利用しているので CRF 31 でテストしたら良い結果となった。  
+FFmpeg に搭載されていた libsvtav1 を利用しているので CRF 31 でテストしたら良い結果となった。\
 そのため FFmpeg の設定に合わせ下記を変更した
 
 |          |                        |                          |
