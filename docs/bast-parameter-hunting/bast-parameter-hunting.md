@@ -26,27 +26,27 @@ Proxmox VE の仮想マシンに PCIE パススルーし、計測している VM
 
 ## 現状のベスト
 
-|                 |  File size |   bitrate | encode time | compress_rate | MSSIM |   VMAF min/mean | GOP   | bf   | refs | I/P/B frames           | options                                                     |
-| :-------------- | ---------: | --------: | ----------: | ------------: | ----: | --------------: | :---- | :--- | :--- | :--------------------- | :---------------------------------------------------------- |
-| libx264         | 94,385.908 | 6,292.776 |      40.209 |         0.617 | 0.998 | 85.469 / 94.831 | 250.0 | 3.0  | 4.0  | 30.0 / 2654.5 / 1380.0 | -crf 23                                                     |
-| libx265         | 88,267.994 | 5,884.813 |     160.378 |         0.651 | 0.997 | 83.206 / 94.555 | 250.0 | 3.0  | 1.0  | 21.5 / 2036.0 / 2231.0 | -crf 23                                                     |
-| libx265         | 42,769.258 | 2,851.418 |     132.840 |         0.832 | 0.994 | 73.278 / 89.803 | 250.0 | 3.0  | 1.0  | 21.5 / 2036.0 / 2231.0 | -crf 28                                                     |
-| libsvtav1       | 64,850.455 | 4,323.608 |      86.170 |         0.745 | 0.997 | 83.326 / 94.639 | 161.0 | 0.0  | 1.0  | 23.0 / 3573.5 / 0.0    | -crf 31                                                     |
-| libsvtav1       | 45,813.643 | 3,054.433 |      85.297 |         0.820 | 0.996 | 80.339 / 93.243 | 161.0 | 0.0  | 1.0  | 23.0 / 3573.5 / 0.0    | -crf 35                                                     |
-|                 |            |           |             |               |       |                 |       |      |      |                        |                                                             |
-| h264_qsv LA-ICQ | 80,026.906 | 5,334.941 |      12.104 |         0.689 | 0.996 | 82.038 / 95.711 | 256.0 | 3.0  | 3.0  | 15.0 / 899.0 / 2683.0  | -global_quality 25 -look_ahead 1                            |
-|                 | 70,052.759 | 4,670.035 |      12.913 |         0.727 | 0.996 | 79.411 / 94.773 | 256.0 | 5.0  | 8.0  | 15.0 / 225.0 / 3357.0  | -global_quality 25 -look_ahead 1 -bf 15 -refs 8             |
-| hevc_qsv ICQ    | 58,740.902 | 3,915.939 |      13.359 |         0.772 | 0.997 | 81.685 / 95.556 | 248.0 | 5.0  | 1.0  | 15.0 / 0.0 / 3582.0    | -global_quality 21 -bf 15 -refs 8                           |
-|                 | 57,403.106 | 3,826.759 |      13.384 |         0.777 | 0.997 | 81.586 / 95.704 | 248.0 | 5.0  | 1.0  | 15.0 / 0.0 / 3582.0    | -global_quality 21 -bf 15 -refs 8 -vf vpp_qsv=format=p010le |
-| av1_qsv ICQ     | 69,171.718 | 4,611.312 |      12.597 |         0.730 | 0.997 | 82.761 / 95.985 | 248.0 | 0.0  | 1.0  | 15.0 / 3582.0 / 0.0    | -global_quality 24                                          |
-|                 | 70,849.782 | 4,723.186 |      12.628 |         0.723 | 0.997 | 83.577 / 96.340 | 248.0 | 0.0  | 1.0  | 15.0 / 3582.0 / 0.0    | -global_quality 24 -vf vpp_qsv=format=p010le                |
+|                 |  File size |   bitrate | encode time | compress_rate | MSSIM |   VMAF min/mean | GOP   | bf  | refs | I/P/B frames           | options                                                     |
+| :-------------- | ---------: | --------: | ----------: | ------------: | ----: | --------------: | :---- | :-- | :--- | :--------------------- | :---------------------------------------------------------- |
+| libx264         | 94,385.908 | 6,292.776 |      40.209 |         0.617 | 0.998 | 85.469 / 94.831 | 250.0 | 3.0 | 4.0  | 30.0 / 2654.5 / 1380.0 | -crf 23                                                     |
+| libx265         | 88,267.994 | 5,884.813 |     160.378 |         0.651 | 0.997 | 83.206 / 94.555 | 250.0 | 3.0 | 1.0  | 21.5 / 2036.0 / 2231.0 | -crf 23                                                     |
+| libx265         | 42,769.258 | 2,851.418 |     132.840 |         0.832 | 0.994 | 73.278 / 89.803 | 250.0 | 3.0 | 1.0  | 21.5 / 2036.0 / 2231.0 | -crf 28                                                     |
+| libsvtav1       | 64,850.455 | 4,323.608 |      86.170 |         0.745 | 0.997 | 83.326 / 94.639 | 161.0 | 0.0 | 1.0  | 23.0 / 3573.5 / 0.0    | -crf 31                                                     |
+| libsvtav1       | 45,813.643 | 3,054.433 |      85.297 |         0.820 | 0.996 | 80.339 / 93.243 | 161.0 | 0.0 | 1.0  | 23.0 / 3573.5 / 0.0    | -crf 35                                                     |
+|                 |            |           |             |               |       |                 |       |     |      |                        |                                                             |
+| h264_qsv LA-ICQ | 80,026.906 | 5,334.941 |      12.104 |         0.689 | 0.996 | 82.038 / 95.711 | 256.0 | 3.0 | 3.0  | 15.0 / 899.0 / 2683.0  | -global_quality 25 -look_ahead 1                            |
+|                 | 70,052.759 | 4,670.035 |      12.913 |         0.727 | 0.996 | 79.411 / 94.773 | 256.0 | 5.0 | 8.0  | 15.0 / 225.0 / 3357.0  | -global_quality 25 -look_ahead 1 -bf 15 -refs 8             |
+| hevc_qsv ICQ    | 58,740.902 | 3,915.939 |      13.359 |         0.772 | 0.997 | 81.685 / 95.556 | 248.0 | 5.0 | 1.0  | 15.0 / 0.0 / 3582.0    | -global_quality 21 -bf 15 -refs 8                           |
+|                 | 57,403.106 | 3,826.759 |      13.384 |         0.777 | 0.997 | 81.586 / 95.704 | 248.0 | 5.0 | 1.0  | 15.0 / 0.0 / 3582.0    | -global_quality 21 -bf 15 -refs 8 -vf vpp_qsv=format=p010le |
+| av1_qsv ICQ     | 69,171.718 | 4,611.312 |      12.597 |         0.730 | 0.997 | 82.761 / 95.985 | 248.0 | 0.0 | 1.0  | 15.0 / 3582.0 / 0.0    | -global_quality 24                                          |
+|                 | 70,849.782 | 4,723.186 |      12.628 |         0.723 | 0.997 | 83.577 / 96.340 | 248.0 | 0.0 | 1.0  | 15.0 / 3582.0 / 0.0    | -global_quality 24 -vf vpp_qsv=format=p010le                |
 
 ### 解像度問題
 
 地上波放送も含め解像度 1920x1080 で残すかアーカイブ目的でより高解像度で残すか迷います。実測として、 1080p は 720p の 2.25 倍の画素があり拡大や 30inch 相当画面で見比べると画質が荒く見えるかもしれません。私の環境でも現在は 27 inch の画面か 11 inch の iPad で視聴するため画素密度で不満に思うことはありませんが、選択として指標をメモします。
 
 下記の表は一般的な配信サービスで h264 配信されている配信データを本解説で defualt としている品質でエンコードした
-容量比較です。  
+容量比較です。\
 音声は保管目的のため Opus 128kbps へ変更しています。
 
 |         |       h264 |          hevc |           av1 |
@@ -59,15 +59,15 @@ Proxmox VE の仮想マシンに PCIE パススルーし、計測している VM
 |    720p | 2,243 Kb/s |    1,597 Kb/s |    1,567 Kb/s |
 |   1080p | 4,322 Kb/s |    2,661 Kb/s |    2,505 Kb/s |
 
-上記のテスト結果から 1080p にすることで 12% の容量追加になるが画素は 2.25 倍なので悪くない選択である。  
+上記のテスト結果から 1080p にすることで 12% の容量追加になるが画素は 2.25 倍なので悪くない選択である。\
 解像度で推奨される bitrate も h264 が Netflix の基準に近いためこれを参考にすると下記が目安になる。
 
-* h264
-  * 720p は 2,200 Kb/s
-  * 1080p は 4,300 Kb/s
-* hevc, av1
-  * 720p は 1,500 Kb/s
-  * 1080p は 2,500 Kbs
+- h264
+  - 720p は 2,200 Kb/s
+  - 1080p は 4,300 Kb/s
+- hevc, av1
+  - 720p は 1,500 Kb/s
+  - 1080p は 2,500 Kbs
 
 [Per-Title Encode Optimization. delivering the same or better… | by Netflix Technology Blog | Netflix TechBlog](https://netflixtechblog.com/per-title-encode-optimization-7e99442b62a2)
 
@@ -75,67 +75,67 @@ Proxmox VE の仮想マシンに PCIE パススルーし、計測している VM
 
 |          codec | Amazon | Abema | Netflix |
 | -------------: | -----: | ----: | ------: |
-| h264  720p min |    716 |       |         |
-| h264  720p max |   1198 |  2344 |         |
+|  h264 720p min |    716 |       |         |
+|  h264 720p max |   1198 |  2344 |         |
 | h264 1080p min |   1624 |       |         |
 | h264 1080p max |   4138 |  5176 |    4947 |
 |                |        |       |         |
-| hevc  720p min |    452 |       |         |
-| hevc  720p max |    642 |       |         |
+|  hevc 720p min |    452 |       |         |
+|  hevc 720p max |    642 |       |         |
 | hevc 1080p min |    798 |       |         |
 | hevc 1080p max |   2649 |       |         |
 |                |        |       |         |
-| av1   720p min |        |       |         |
-| av1   720p max |        |       |     350 |
-| av1  1080p min |        |       |     673 |
-| av1  1080p max |        |       |    1352 |
+|   av1 720p min |        |       |         |
+|   av1 720p max |        |       |     350 |
+|  av1 1080p min |        |       |     673 |
+|  av1 1080p max |        |       |    1352 |
 
 ### 地上波放送
 
 地上波放送をサンプリングした参考値
 
-|                  |  File size |   bitrate | encode time | compress_rate | MSSIM |   VMAF min/mean | GOP   | bf   | refs | I/P/B frames             | options                                                                                             |
-| :--------------- | ---------: | --------: | ----------: | ------------: | ----: | --------------: | :---- | :--- | :--- | :----------------------- | :-------------------------------------------------------------------------------------------------- |
-| h264_qsv  CQP    | 32,774.073 | 2,184.574 |       9.032 |         0.818 | 0.996 | 77.264 / 93.832 | 256.0 | 5.0  | 8.0  | 15.0 /   225.0 / 3,357.0 | -q:v 22 -bf 15 -refs 8 -vf vpp_qsv=deinterlace=advanced,setfield=mode=prog                          |
-| h264_qsv  ICQ    | 41,406.853 | 2,759.996 |       9.278 |         0.772 | 0.996 | 78.231 / 93.923 | 256.0 | 5.0  | 8.0  | 15.0 /   225.0 / 3,357.0 | -global_quality 25 -bf 15 -refs 8 -vf vpp_qsv=deinterlace=advanced,setfield=mode=prog               |
-| h264_qsv  LA_ICQ | 41,406.853 | 2,759.996 |       9.276 |         0.772 | 0.996 | 78.231 / 93.923 | 256.0 | 5.0  | 8.0  | 15.0 /   225.0 / 3,357.0 | -global_quality 25 -look_ahead 1 -bf 15 -refs 8 -vf vpp_qsv=deinterlace=advanced,setfield=mode=prog |
-| hevc_qsv  ICQ    | 38,546.974 | 2,569.370 |      30.499 |         0.787 | 0.997 | 78.858 / 94.378 | 248.0 | 5.0  | 1.0  | 15.0 /     0.0 / 3,582.0 | -global_quality 21 -bf 15 -refs 8 -vf vpp_qsv=deinterlace=advanced,format=p010le,setfield=mode=prog |
-| libsvtav1 CRF    | 32,370.096 | 2,157.646 |      59.117 |         0.822 | 0.997 | 79.178 / 94.927 | 161.0 | 0.0  | 1.0  | 23.0 / 3,574.0 /     0.0 | -crf 31 -vf yadif=0:-1:0                                                                            |
-| av1_qsv   ICQ    | 43,167.632 | 2,877.362 |      32.293 |         0.761 | 0.997 | 80.600 / 94.959 | 248.0 | 0.0  | 1.0  | 15.0 / 3,582.0 /     0.0 | -global_quality 24 -vf vpp_qsv=deinterlace=advanced,format=p010le,setfield=mode=prog                |
-| av1_qsv   CQP    | 49,404.766 | 3,293.102 |      32.105 |         0.728 | 0.997 | 80.343 / 95.263 | 248.0 | 0.0  | 1.0  | 15.0 / 3,582.0 /     0.0 | -q:v 53 -vf vpp_qsv=deinterlace=advanced,format=p010le,setfield=mode=prog                           |
-| libx265   CRF    | 50,252.294 | 3,349.594 |     102.439 |         0.741 | 0.997 | 86.860 / 95.175 | 250.0 | 3.0  | 1.0  | 21.0 /   916.0 / 2,727.0 | -crf 23 -vf yadif=0:-1:0                                                                            |
-| libx264   CRF    | 56,135.262 | 3,741.727 |      32.682 |         0.710 | 0.997 | 87.255 / 95.318 | 250.0 | 3.0  | 4.0  | 26.0 / 1,015.0 / 2,639.0 | -crf 23 -vf yadif=0:-1:0                                                                            |
+|                 |  File size |   bitrate | encode time | compress_rate | MSSIM |   VMAF min/mean | GOP   | bf  | refs | I/P/B frames             | options                                                                                             |
+| :-------------- | ---------: | --------: | ----------: | ------------: | ----: | --------------: | :---- | :-- | :--- | :----------------------- | :-------------------------------------------------------------------------------------------------- |
+| h264_qsv CQP    | 32,774.073 | 2,184.574 |       9.032 |         0.818 | 0.996 | 77.264 / 93.832 | 256.0 | 5.0 | 8.0  | 15.0 / 225.0 / 3,357.0   | -q:v 22 -bf 15 -refs 8 -vf vpp_qsv=deinterlace=advanced,setfield=mode=prog                          |
+| h264_qsv ICQ    | 41,406.853 | 2,759.996 |       9.278 |         0.772 | 0.996 | 78.231 / 93.923 | 256.0 | 5.0 | 8.0  | 15.0 / 225.0 / 3,357.0   | -global_quality 25 -bf 15 -refs 8 -vf vpp_qsv=deinterlace=advanced,setfield=mode=prog               |
+| h264_qsv LA_ICQ | 41,406.853 | 2,759.996 |       9.276 |         0.772 | 0.996 | 78.231 / 93.923 | 256.0 | 5.0 | 8.0  | 15.0 / 225.0 / 3,357.0   | -global_quality 25 -look_ahead 1 -bf 15 -refs 8 -vf vpp_qsv=deinterlace=advanced,setfield=mode=prog |
+| hevc_qsv ICQ    | 38,546.974 | 2,569.370 |      30.499 |         0.787 | 0.997 | 78.858 / 94.378 | 248.0 | 5.0 | 1.0  | 15.0 / 0.0 / 3,582.0     | -global_quality 21 -bf 15 -refs 8 -vf vpp_qsv=deinterlace=advanced,format=p010le,setfield=mode=prog |
+| libsvtav1 CRF   | 32,370.096 | 2,157.646 |      59.117 |         0.822 | 0.997 | 79.178 / 94.927 | 161.0 | 0.0 | 1.0  | 23.0 / 3,574.0 / 0.0     | -crf 31 -vf yadif=0:-1:0                                                                            |
+| av1_qsv ICQ     | 43,167.632 | 2,877.362 |      32.293 |         0.761 | 0.997 | 80.600 / 94.959 | 248.0 | 0.0 | 1.0  | 15.0 / 3,582.0 / 0.0     | -global_quality 24 -vf vpp_qsv=deinterlace=advanced,format=p010le,setfield=mode=prog                |
+| av1_qsv CQP     | 49,404.766 | 3,293.102 |      32.105 |         0.728 | 0.997 | 80.343 / 95.263 | 248.0 | 0.0 | 1.0  | 15.0 / 3,582.0 / 0.0     | -q:v 53 -vf vpp_qsv=deinterlace=advanced,format=p010le,setfield=mode=prog                           |
+| libx265 CRF     | 50,252.294 | 3,349.594 |     102.439 |         0.741 | 0.997 | 86.860 / 95.175 | 250.0 | 3.0 | 1.0  | 21.0 / 916.0 / 2,727.0   | -crf 23 -vf yadif=0:-1:0                                                                            |
+| libx264 CRF     | 56,135.262 | 3,741.727 |      32.682 |         0.710 | 0.997 | 87.255 / 95.318 | 250.0 | 3.0 | 4.0  | 26.0 / 1,015.0 / 2,639.0 | -crf 23 -vf yadif=0:-1:0                                                                            |
 
-* 条件
-  * アニメ、実写をランダムに5本選出
-  * 本編映像で2分間を抜き、 MPEG2-TS 以外のデータを削除
-  * エンコード時 にインターレースを解除する
-    * ソフトウェアエンコードは `-vf yadif=0:-1:0`
-    * ハードウエアエンコードは `-vf vpp_qsv=deinterlace=advanced,setfield=mode=prog`
-      * `setfield=mode=prog` は `vpp_qsv` のバグでインターレース解除後でもインターレースとして報告してしまうため強制的に progressive として書き出している
-  * VMAF 計測時はソース映像に下記フィルターを適用
-    * アニメ: `fieldmatch,yadif=0:-1:1`
-    * 実写: `yadif=0:-1:0`
+- 条件
+  - アニメ、実写をランダムに5本選出
+  - 本編映像で2分間を抜き、 MPEG2-TS 以外のデータを削除
+  - エンコード時 にインターレースを解除する
+    - ソフトウェアエンコードは `-vf yadif=0:-1:0`
+    - ハードウエアエンコードは `-vf vpp_qsv=deinterlace=advanced,setfield=mode=prog`
+      - `setfield=mode=prog` は `vpp_qsv` のバグでインターレース解除後でもインターレースとして報告してしまうため強制的に progressive として書き出している
+  - VMAF 計測時はソース映像に下記フィルターを適用
+    - アニメ: `fieldmatch,yadif=0:-1:1`
+    - 実写: `yadif=0:-1:0`
 
 ## 画質探索の極意
 
-私の知識で、簡単に動画ファイルの圧縮について記述します。  
-[FFmpeg](https://www.ffmpeg.org) を利用します、 Windows などでは [HandBrake](https://handbrake.fr) など GUI で優れたエンコードソフトウェアがありますが、私の環境では Linux を主に利用しており、 Linux/Windows で同じ設定を利用出来ないと品質を維持して利用することが出来ません。  
+私の知識で、簡単に動画ファイルの圧縮について記述します。\
+[FFmpeg](https://www.ffmpeg.org) を利用します、 Windows などでは [HandBrake](https://handbrake.fr) など GUI で優れたエンコードソフトウェアがありますが、私の環境では Linux を主に利用しており、 Linux/Windows で同じ設定を利用出来ないと品質を維持して利用することが出来ません。
 
-「動画の圧縮」と一言で言っても方法が多く、広義の方法として言われる事が多いため実現したい事を定義する。世の中には地上波放送を録画して楽しむ文化がある。総称として DTV が用いられるため以下はそうする。 DTV は地上波放送を録画する関係で MPEG-2 のコーディックで配信されてくる音声、映像データを保存するため約 7GB/時間の容量を必要とする。  
+「動画の圧縮」と一言で言っても方法が多く、広義の方法として言われる事が多いため実現したい事を定義する。世の中には地上波放送を録画して楽しむ文化がある。総称として DTV が用いられるため以下はそうする。 DTV は地上波放送を録画する関係で MPEG-2 のコーディックで配信されてくる音声、映像データを保存するため約 7GB/時間の容量を必要とする。\
 そのため、アニメやドラマを全録するような利用をすると2600番組/年程度録画することになり、単純な容量計算では 18TB 程度必要になる。これでは毎年高額な大容量 HDD を買い足す運用になり維持管理が難しいため映像を圧縮して容量を削減するのが目的である。
 
 映像を圧縮するには codec を指定する、今回は Intel QSV を利用するため h264, HEVC, AV1 に対応しており圧縮率は h264 -> HEVC -> AV1 の順番でよくなり秒間あたりの Bitrate が削減できるため動画全体として容量を圧縮できる。一方、圧縮時間は圧縮率が高い codec になるほど時間がかかるため AV1 が最も優れているが、処理時間とトレードオフになる事もある。
 
 エンコードすると多少なりとも映像は劣化する。がそれを定量的に確認する術がなく、「なんか画質悪くなった」というようなケースがあったんではなかろうか。そのため今回は結構なパターンを検証することもあり [VMAF](https://github.com/Netflix/vmaf) を利用したスコアを確認する。 VMAF のスコアは 1080p をベースに算出され、 0-100 での数値で表記される。 全フレームの平均が採用されるが、最低値を確認する方法として `min` も存在するこれは フレームに対して記録された最低値のため容易に 0 が記録される事がある。オプションを設定することで 調和平均(`harmonic_mean`) を確認することができる。のでこちらを利用する。
 
-テストの目標は調和平均 VMAF 93 以上、容量はできるだけ小さくを目標にする。  
-アニメ 1話 200MB 以下、1クオーター 500GB 前後になるようにしたい。  
+テストの目標は調和平均 VMAF 93 以上、容量はできるだけ小さくを目標にする。\
+アニメ 1話 200MB 以下、1クオーター 500GB 前後になるようにしたい。
 
-* q(Constant Quantizer): エンコード時に出る `q=XX.X` の数値で `-global_quality` に合わせて前後する。
-  * `libx264` の `-crf 23` は `q=29.0` となる
-  * LA-ICQ で合わせるなら `-global_quality 25` が同等となる。
-* qp(Quantization Parameter): 固定品質パラメータ、各 Frame の最低値設定などで利用する
+- q(Constant Quantizer): エンコード時に出る `q=XX.X` の数値で `-global_quality` に合わせて前後する。
+  - `libx264` の `-crf 23` は `q=29.0` となる
+  - LA-ICQ で合わせるなら `-global_quality 25` が同等となる。
+- qp(Quantization Parameter): 固定品質パラメータ、各 Frame の最低値設定などで利用する
 
 ## Global
 
@@ -176,10 +176,10 @@ Proxmox VE の仮想マシンに PCIE パススルーし、計測している VM
 |          | `-ab 256k`                                |                           | ビットレート 256kbps                                                              |
 |          | `-bsf:a aac_adtstoasc`                    |                           | MPEG-2 から MPEG-4 に変更するオプション                                           |
 
-* [FFmpeg Codecs Documentation](https://ffmpeg.org/ffmpeg-codecs.html#Global-Options-_002d_003e-MSDK-Options)
-* [HWAccelIntro – FFmpeg](https://trac.ffmpeg.org/wiki/HWAccelIntro)
-* [Hardware/QuickSync – FFmpeg](https://trac.ffmpeg.org/wiki/Hardware/QuickSync)
-* [Hardware/VAAPI – FFmpeg](https://trac.ffmpeg.org/wiki/Hardware/VAAPI)
+- [FFmpeg Codecs Documentation](https://ffmpeg.org/ffmpeg-codecs.html#Global-Options-_002d_003e-MSDK-Options)
+- [HWAccelIntro – FFmpeg](https://trac.ffmpeg.org/wiki/HWAccelIntro)
+- [Hardware/QuickSync – FFmpeg](https://trac.ffmpeg.org/wiki/Hardware/QuickSync)
+- [Hardware/VAAPI – FFmpeg](https://trac.ffmpeg.org/wiki/Hardware/VAAPI)
 
 ```bash
 $ ffmpeg -loglevel debug -i base.mkv -c:v h264_qsv -global_quality 25 -look_ahead 1 -preset veryslow -f null -
@@ -212,47 +212,46 @@ $ ffmpeg -loglevel debug -i base.mkv -c:v h264_qsv -global_quality 25 -look_ahea
 [h264_qsv @ 0x6003e69b3bc0] LowDelayBRC: OFF
 [h264_qsv @ 0x6003e69b3bc0] MaxFrameSizeI: 0; MaxFrameSizeP: 0
 [h264_qsv @ 0x6003e69b3bc0] ScenarioInfo: 0
-
 ```
 
 ## Encode type
 
 Intel QSV では下記のエンコードモードに対応している
 
-* CQP (Constant Quantization Parameter)
-  * **Intel QSV での h264_qsv, hevc_qsv, av1_qsv のデフォルトモード**
-  * 一定品質を維持する設定のため、単調なシーンでは過剰、複雑なシーンではビットレート不足となる
-* ICQ (Intelligent Constant Quality)
-  * このモードは画質を一定に保ちながら、シーンの複雑さに応じてビットレートを調整します。
-* LA-ICQ (Look-Ahead Intelligent Constant Quality)
-  * `hevc_qsv`, `av1_qsv` では 2025/02 現在では LA_ICQ の実装はない
-    * [[Bug]: VA_RC_ICQ not available in AV1 encoder on DG2 · Issue #1597 · intel/media-driver](https://github.com/intel/media-driver/issues/1597)
-  * 先読み解析により画質制御がされ適切なビットレートを割り当てることで、画質と容量のバランスを取ります
+- CQP (Constant Quantization Parameter)
+  - **Intel QSV での h264_qsv, hevc_qsv, av1_qsv のデフォルトモード**
+  - 一定品質を維持する設定のため、単調なシーンでは過剰、複雑なシーンではビットレート不足となる
+- ICQ (Intelligent Constant Quality)
+  - このモードは画質を一定に保ちながら、シーンの複雑さに応じてビットレートを調整します。
+- LA-ICQ (Look-Ahead Intelligent Constant Quality)
+  - `hevc_qsv`, `av1_qsv` では 2025/02 現在では LA_ICQ の実装はない
+    - [[Bug]: VA_RC_ICQ not available in AV1 encoder on DG2 · Issue #1597 · intel/media-driver](https://github.com/intel/media-driver/issues/1597)
+  - 先読み解析により画質制御がされ適切なビットレートを割り当てることで、画質と容量のバランスを取ります
 
-libx265 でおなじみ CRF(Constant Rate Factor) は Intel QSV には存在しない  
+libx265 でおなじみ CRF(Constant Rate Factor) は Intel QSV には存在しない\
 画質は、 LA-ICQ が最も良く ICQ、CQP、VBR の順になる
 
 ## 条件
 
-* q / CRF は手元の環境でテストし VMAF min/mean が下限 70/93 を超えるパラメーターを採用する
-* [Encode Features for Intel® Discrete Graphics](https://www.intel.com/content/www/us/en/docs/onevpl/developer-reference-media-intel-hardware/1-0/features-and-formats.html#ENCODE-DISCRETE)
-* MSSIM(Mean SSIM / 構造的類似性) 画像の類似性を計測する値、1に近いほうが元画像に近い
-* [VMAF - Video Multi-Method Assessment Fusion](https://github.com/Netflix/vmaf/tree/master)
-  * Netflix が配信映像の主観的品質評価を目的に開発したライブラリー
-  * 機械学習を利用して人間の映像品質の識別を教師データとして学習しているため、人間の知覚に近い
-  * 0-100 で算出され一般に 93-96 は元映像の見分けが付かず、 95 以上はオリジナルより余剰容量(Bitrate)となる
-    * スコア差 2 は人間では見分けが付かず、3を超えると知覚が鋭敏な人は気づく (18人のテストで半分が気づく)
-    * 93.00 付近で複数値がある場合は compress_rate が ±0.03 以内なら VMAF mean がより高い方を選択
-* `-threads`
-  * 通常の利用では指定なしでも問題ないが、今回のテストでは 60Core のマシンを利用しているため実利用の環境に合わせ 4Core で制限をかける
+- q / CRF は手元の環境でテストし VMAF min/mean が下限 70/93 を超えるパラメーターを採用する
+- [Encode Features for Intel® Discrete Graphics](https://www.intel.com/content/www/us/en/docs/onevpl/developer-reference-media-intel-hardware/1-0/features-and-formats.html#ENCODE-DISCRETE)
+- MSSIM(Mean SSIM / 構造的類似性) 画像の類似性を計測する値、1に近いほうが元画像に近い
+- [VMAF - Video Multi-Method Assessment Fusion](https://github.com/Netflix/vmaf/tree/master)
+  - Netflix が配信映像の主観的品質評価を目的に開発したライブラリー
+  - 機械学習を利用して人間の映像品質の識別を教師データとして学習しているため、人間の知覚に近い
+  - 0-100 で算出され一般に 93-96 は元映像の見分けが付かず、 95 以上はオリジナルより余剰容量(Bitrate)となる
+    - スコア差 2 は人間では見分けが付かず、3を超えると知覚が鋭敏な人は気づく (18人のテストで半分が気づく)
+    - 93.00 付近で複数値がある場合は compress_rate が ±0.03 以内なら VMAF mean がより高い方を選択
+- `-threads`
+  - 通常の利用では指定なしでも問題ないが、今回のテストでは 60Core のマシンを利用しているため実利用の環境に合わせ 4Core で制限をかける
 
-* HW encode
-  * `-preset`
-    * HW encode になるとどの `-preset` を使っても実行時間の差はわずかであるため一番処理に時間がかかる `veryslow` を採用する
+- HW encode
+  - `-preset`
+    - HW encode になるとどの `-preset` を使っても実行時間の差はわずかであるため一番処理に時間がかかる `veryslow` を採用する
 
 ## ベースデータ
 
-ベースデータは各 codec の基準値として採用する値  
+ベースデータは各 codec の基準値として採用する値\
 この値から + / - どちらに触れたかで映像の向上を確認する
 
 | codev       | BRC modes     | BBB / Nature | q / CRF |  File size |   bitrate | encode time | compress_rate | MSSIM | VMAF min/mean | Options<br>GOP,b-frame, refs     |
@@ -317,38 +316,43 @@ libx265 でおなじみ CRF(Constant Rate Factor) は Intel QSV には存在し�
 
 ### h264_qsv tests
 
-* CQP / ICQ / LA-ICQ をテスト、設定値を決定
-  * LA-ICQ を採用
-  * ベースラインから `-global_quality 25 -look_ahead 1` でテストを開始
-* 1. フレーム処理と適応型設定
-  * **結果:** パラメータを変更しながら、調査したが指定なしが一番良い
-  * `adaptive_i`: Iフレームの適応型配置を有効化
-  * `adaptive_b`: Bフレームの適応型配置を有効化
-  * `b_strategy`: Bフレームの選択戦略を有効化
-* 1. 基本設定（プリセットとシナリオ）
-  * `-scenario`
-    * **結果:** 全く変化なし
-* 1. レートコントロールと品質
-  * `-look_ahead_depth`: フレーム数での先読みの深さを設定
-  * `-look_ahead_downsampling`: 先読み時にダウンスケーリングするか
-    * **結果:** 全く変化なし
-  * `-rdo`: Bitrate の極端な乱高下を最適化する
-    * **結果:** 全く変化なし
-  * `min_qp_i`, `max_qp_i`, `min_qp_p`, `max_qp_p`, `min_qp_b`, `max_qp_b`
-    * LA-ICQ では自動的に設定されるため、変更しない
-* 1. 画質とフィルタ
-  * `dblk_idc`: デブロックフィルタ、ブロックノイズを軽減し、画質を改善します。
-    * **結果:** 全く変化なし
-* 1. GOP, B-Frame, Refs の選定
-  * `-bf {2..20} -refs {1..20}` をテストした
-    * * **結果:**
-      * `-bf 15 -refs 8` を採用する、これによって平均で 12% 容量を削減できる(h264_qsv の場合)
-      * 調査では `-bf 2 -refs 9` がもっと画質が良かった
-      * `-refs 16` 以上は、品質が落ちる事がわかったので利用しない
-      * `libx265` は最大で `-bf 15 -refs 8` であった
-    * `-bf {2..20}` は緩やかに圧縮率が改善する
-    * `-refs {1..20}`
-      * `-refs 15` 以上はどの `-bf` でも品質が落ちる(VMAF min 34 など)
+- CQP / ICQ / LA-ICQ をテスト、設定値を決定
+  - LA-ICQ を採用
+  - ベースラインから `-global_quality 25 -look_ahead 1` でテストを開始
+-
+  1. フレーム処理と適応型設定
+  - **結果:** パラメータを変更しながら、調査したが指定なしが一番良い
+  - `adaptive_i`: Iフレームの適応型配置を有効化
+  - `adaptive_b`: Bフレームの適応型配置を有効化
+  - `b_strategy`: Bフレームの選択戦略を有効化
+-
+  1. 基本設定（プリセットとシナリオ）
+  - `-scenario`
+    - **結果:** 全く変化なし
+-
+  1. レートコントロールと品質
+  - `-look_ahead_depth`: フレーム数での先読みの深さを設定
+  - `-look_ahead_downsampling`: 先読み時にダウンスケーリングするか
+    - **結果:** 全く変化なし
+  - `-rdo`: Bitrate の極端な乱高下を最適化する
+    - **結果:** 全く変化なし
+  - `min_qp_i`, `max_qp_i`, `min_qp_p`, `max_qp_p`, `min_qp_b`, `max_qp_b`
+    - LA-ICQ では自動的に設定されるため、変更しない
+-
+  1. 画質とフィルタ
+  - `dblk_idc`: デブロックフィルタ、ブロックノイズを軽減し、画質を改善します。
+    - **結果:** 全く変化なし
+-
+  1. GOP, B-Frame, Refs の選定
+  - ## `-bf {2..20} -refs {1..20}` をテストした
+    - **結果:**
+    - `-bf 15 -refs 8` を採用する、これによって平均で 12% 容量を削減できる(h264_qsv の場合)
+    - 調査では `-bf 2 -refs 9` がもっと画質が良かった
+    - `-refs 16` 以上は、品質が落ちる事がわかったので利用しない
+    - `libx265` は最大で `-bf 15 -refs 8` であった
+    - `-bf {2..20}` は緩やかに圧縮率が改善する
+    - `-refs {1..20}`
+      - `-refs 15` 以上はどの `-bf` でも品質が落ちる(VMAF min 34 など)
 
 |                   |  File size |   bitrate | encode time | compress_rate | MSSIM |   VMAF min/mean | options                                         |
 | :---------------- | ---------: | --------: | ----------: | ------------: | ----: | --------------: | :---------------------------------------------- |
@@ -357,36 +361,41 @@ libx265 でおなじみ CRF(Constant Rate Factor) は Intel QSV には存在し�
 
 ### hevc_qsv tests
 
-* CQP / ICQ をテスト、設定値を決定
-  * ICQ を採用
-  * ベースラインから `-global_quality 21` でテストを開始
-* 1. GOP サイズ、 B-Frame、参照フレーム数
-  * **結果:**
-  * `-bf 15 -refs 8` を採用
-  * `-g 256` にしても 0.004% しか容量に変化が無いため、デフォルトの `-g 248` を採用する
-* 1. Extended BRC と先読みフレーム数
-  * `-extbrc 1 -look_ahead_depth {10..100}`
-    * **結果:** 変化なし
-  * `-rdo`: Bitrate の極端な乱高下を最適化する
-    * **結果:** 変化なし
-* 1. シナリオ
-  * `-scenario`
-    * **結果:** 全く変化なし
-* 1. 画質とフィルタ
-  * `dblk_idc`: デブロックフィルタ、ブロックノイズを軽減し、画質を改善します。
-    * **結果:** VMAF min は改善するが VMAF mean が劣化するため、採用しない
-* `-b_strategy`,`-adaptive_i`, `adaptive_b` 効果無し
-* `-profile main10` やったほうがきれいになる
+- CQP / ICQ をテスト、設定値を決定
+  - ICQ を採用
+  - ベースラインから `-global_quality 21` でテストを開始
+-
+  1. GOP サイズ、 B-Frame、参照フレーム数
+  - **結果:**
+  - `-bf 15 -refs 8` を採用
+  - `-g 256` にしても 0.004% しか容量に変化が無いため、デフォルトの `-g 248` を採用する
+-
+  1. Extended BRC と先読みフレーム数
+  - `-extbrc 1 -look_ahead_depth {10..100}`
+    - **結果:** 変化なし
+  - `-rdo`: Bitrate の極端な乱高下を最適化する
+    - **結果:** 変化なし
+-
+  1. シナリオ
+  - `-scenario`
+    - **結果:** 全く変化なし
+-
+  1. 画質とフィルタ
+  - `dblk_idc`: デブロックフィルタ、ブロックノイズを軽減し、画質を改善します。
+    - **結果:** VMAF min は改善するが VMAF mean が劣化するため、採用しない
+- `-b_strategy`,`-adaptive_i`, `adaptive_b` 効果無し
+- `-profile main10` やったほうがきれいになる
 
 ### av1_qsv tests
 
-* CQP / ICQ をテスト、設定値を決定
-  * ICQ を採用
-  * ベースラインから `-global_quality 21` でテストを開始
-* 1. GOP サイズ、 B-Frame、参照フレーム数
-  * 設定しないほうが良い
-* `-b_strategy`, `-adaptive_i`, `adaptive_b`
-  * **結果:** 全く変化なし
-* `-extbrc 1 -look_ahead_depth {10..100}`
-  * **結果:** 全く変化なし
-* `-profile main10` やったほうがきれいになる
+- CQP / ICQ をテスト、設定値を決定
+  - ICQ を採用
+  - ベースラインから `-global_quality 21` でテストを開始
+-
+  1. GOP サイズ、 B-Frame、参照フレーム数
+  - 設定しないほうが良い
+- `-b_strategy`, `-adaptive_i`, `adaptive_b`
+  - **結果:** 全く変化なし
+- `-extbrc 1 -look_ahead_depth {10..100}`
+  - **結果:** 全く変化なし
+- `-profile main10` やったほうがきれいになる
