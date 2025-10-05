@@ -10,7 +10,7 @@ ARG DEBIAN_FRONTEND=noninteractive \
 ## renovate: datasource=github-releases packageName=asdf-vm/asdf versioning=semver automerge=true
 ARG ASDF_VERSION="v0.16.4"
 ## renovate: datasource=github-releases packageName=dprint/dprint versioning=semver automerge=true
-ARG DPRINT_VERSION=0.50.1
+ARG DPRINT_VERSION=0.50.2
 
 # retry dns and some http codes that might be transient errors
 ARG CURL_OPTS="-sfSL --retry 3 --retry-delay 2 --retry-connrefused"
