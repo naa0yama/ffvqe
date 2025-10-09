@@ -87,7 +87,7 @@ jobs:
           poetry env info
 
       - name: Install dprint
-        uses: taiki-e/install-action@3216b6964cbfe053bb8b9a2ef245bd9300e2061d # v2.62.14
+        uses: taiki-e/install-action@7fe7b8c79a3c5569643cf27dfc32456883a4cd4d # v2.62.16
         with:
           tool: dprint@${{ steps.versions.outputs.dprint }}
 
