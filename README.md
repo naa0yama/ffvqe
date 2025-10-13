@@ -177,6 +177,28 @@ ffmpeg -y -threads 4 -hide_banner -ignore_unknown -fflags +discardcorrupt+genpts
   out.mkv
 ```
 
+## テスト環境
+
+Proxmox VE 上に Ubuntu 24.04 LST で実行します。
+
+|                 |                                                       |
+| :-------------- | :---------------------------------------------------- |
+| CPU             | 8 (1 sockets, 8 cores) `[x86-64-v3][numa=1][cpulimt=8]` |
+| Memory          | 16GB                                                  |
+| BOIS            | OVMF (UEFI)                                           |
+| Machine         | q35                                                   |
+| SCSI Controller | VirtIS SCSI                                           |
+
+![VM Settings](docs/d147d6e50edf.png)
+
+|  Host  |                                           |
+| :----- | :---------------------------------------- |
+| CPU    | 64 x AMD EPYC 7551P 32-Core Processor 2Ghz |
+| M/B    | Supermicro H11SSL-i                       |
+| Memory | 8 x 32GB DDR4-2133                        |
+| SSD    | 2x Intel 2.5inch 480GB D3-S4510 ZFS Miror |
+| GPU    | Sparkle Intel Arc A310 ELF 4GB SA310E-4G  |
+
 ## 利用方法
 
 レポジトリーを clone して VSCode Dev Containers で起動する
@@ -423,22 +445,22 @@ curl https://get.docker.com | sh \
 ### マニュアル生成
 
 ```bash
-mkdir -p ./videos/source/{decoders,encoders,filters}
-for decoder in libaom-av1 libdav1d av1 av1_qsv h264 h264_qsv hevc hevc_qsv mpeg2video mpeg2_qsv vp9_qsv
+mkdir -p ./docs/{decoders,encoders,filters}
+for decoder in libdav1d av1 av1_qsv h264 h264_qsv hevc hevc_qsv mpeg2video mpeg2_qsv vp9_qsv
 do
-  ffmpeg -hide_banner -h decoder=${decoder}    > ./videos/source/decoders/decoder_${decoder}.txt
+  ffmpeg -hide_banner -h decoder=${decoder}    > ./docs/decoders/decoder_${decoder}.txt
 done
 
-for encoder in libaom-av1 libsvtav1 av1_qsv libx264 h264_qsv libx265 hevc_qsv mpeg2_qsv vp9_qsv libopus
+for encoder in libsvtav1 av1_qsv libx264 h264_qsv libx265 hevc_qsv mpeg2_qsv vp9_qsv libopus
 do
-  ffmpeg -hide_banner -h encoder=${encoder}    > ./videos/source/encoders/encoder_${encoder}.txt
+  ffmpeg -hide_banner -h encoder=${encoder}    > ./docs/encoders/encoder_${encoder}.txt
 done
 
 for filter in \
   deinterlace_qsv fieldmatch libvmaf overlay_qsv sab \
   scale scale_qsv vpp_qsv yadif
 do
-  ffmpeg -hide_banner -h filter=${filter}    > ./videos/source/filters/filter_${filter}.txt
+  ffmpeg -hide_banner -h filter=${filter}    > ./docs/filters/filter_${filter}.txt
 done
 ```
 
