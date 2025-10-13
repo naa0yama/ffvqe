@@ -75,7 +75,7 @@ repos:
     hooks:
       - id: dprint
         name: dprint
-        entry: /bin/sh -c "cd . && .venv/bin/pytest"
+        entry: /bin/sh -c "cd . && dprint"
         args: ["fmt", "--incremental=false"]
         language: system
         files: ".*" # This or types below, either way same error

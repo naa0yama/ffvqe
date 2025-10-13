@@ -126,6 +126,8 @@ def _run_ffprobe(encode_cfg: dict[str, Any], probe_timeout: int) -> tuple[str, f
         "-v",
         "error",
         "-hide_banner",
+        "-select_streams",
+        "v:0",
         "-show_streams",
         "-show_format",
         "-show_entries",
@@ -250,7 +252,8 @@ def getvmaf(
             "[Distorted][Reference]libvmaf=eof_action=endall:"
             "log_fmt=json:"
             f"log_fmt=json:log_path={encode_cfg['outfile']['filename']}_vmaf.json:"
-            f"n_threads={cpu_count}:"
+            f"log_fmt=json:log_path={encode_cfg['outfile']['filename']}_vmaf.json:"
+            f"n_threads={cpu_count}:n_subsample=3:"
             "pool=harmonic_mean:"
             "feature=name=psnr|name=float_ssim:"
             "model=version=vmaf_v0.6.1"

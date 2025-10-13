@@ -71,7 +71,7 @@
 	/*****************************************************************************
 	 * Language Settings */
 	"[markdown]": {
-		"editor.defaultFormatter": "yzhang.markdown-all-in-one",
+		"editor.defaultFormatter": "DavidAnson.vscode-markdownlint",
 		"files.trimTrailingWhitespace": false // Markdown のファイルは行末の空白をトリミングしない
 	},
 	"[python]": {
