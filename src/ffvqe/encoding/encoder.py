@@ -57,14 +57,15 @@ def _build_ffmpeg_command(encode_cfg: dict[str, Any], ffmpeg_threads: int) -> li
 
     # Add output file options
     if "outfile" in encode_cfg:
-        if encode_cfg["outfile"]["options"] != []:
-            ffmpeg_cmd.extend(str(encode_cfg["outfile"]["options"]).split())
         ffmpeg_cmd.append("-c:v")
         ffmpeg_cmd.append(f"{encode_cfg['codec']}")
 
         if encode_cfg["preset"] != "none":
             ffmpeg_cmd.append("-preset:v")
             ffmpeg_cmd.append(f"{encode_cfg['preset']}")
+
+        if encode_cfg["outfile"]["options"] != []:
+            ffmpeg_cmd.extend(str(encode_cfg["outfile"]["options"]).split())
 
         ffmpeg_cmd.append(f"{encode_cfg['outfile']['filename']}.mkv")
 
@@ -194,12 +195,15 @@ def encoding(
     # Run FFprobe on encoded file
     probe_filename, elapsed_time_prbt = _run_ffprobe(encode_cfg, probe_timeout)
 
+    # Get encode options for parameter extraction
+    encode_options = encode_cfg.get("outfile", {}).get("options", "")
+
     # Return results
     return {
         "commandline": " ".join(ffmpeg_cmd),
         "elapsed_time": elapsed_time_enc,
         "elapsed_prbt": elapsed_time_prbt,
-        "stream": getframeinfo(probe_filename),
+        "stream": getframeinfo(probe_filename, encode_options),
     }
 
 

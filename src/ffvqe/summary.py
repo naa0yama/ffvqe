@@ -54,9 +54,35 @@ def show_aggregated_results() -> None:
             ROUND(AVG(vmaf_mean), 3)                 AS vmaf_mean,
             outfile_options
         FROM encodes
+        WHERE
+            ref_type like 'Anime' AND
+            vmaf_mean >= 93.00 AND
+            vmaf_mean <= 100.00
         GROUP BY ref_type, outfile_options
         ORDER BY outfile_options DESC
-        LIMIT 8
+        LIMIT 5
+    """,
+    ).show()
+    duckdb.sql(
+        """
+        SELECT
+            ref_type,
+            ROUND(AVG(outfile_size_kbyte), 3)        AS outfile_size_kbyte,
+            ROUND(AVG(outfile_bit_rate_kbs), 3)      AS outfile_bit_rate_kbs,
+            ROUND(AVG(enc_sec), 3)                   AS enc_sec,
+            ROUND(AVG(comp_ratio_persent), 3)        AS comp_ratio_persent,
+            ROUND(AVG(ssim_mean), 3)                 AS ssim_mean,
+            ROUND(AVG(vmaf_min), 3)                  AS vmaf_min,
+            ROUND(AVG(vmaf_mean), 3)                 AS vmaf_mean,
+            outfile_options
+        FROM encodes
+        WHERE
+            ref_type like 'Nature' AND
+            vmaf_mean >= 93.00 AND
+            vmaf_mean <= 100.00
+        GROUP BY ref_type, outfile_options
+        ORDER BY outfile_options DESC
+        LIMIT 5
     """,
     ).show()
 
@@ -75,8 +101,7 @@ def show_aggregated_results() -> None:
             ROUND(AVG((200 - (vmaf_min + vmaf_mean)) +
                 (2 - (ssim_mean + comp_ratio_persent))), 3) AS pt,
             ROUND(AVG(gop), 3)                       AS gop,
-            IF(AVG(has_b_frames) > 1,
-                ROUND(AVG(has_b_frames) + 1, 3), 0)  AS bf,
+            ROUND(AVG(max_consecutive_bframes), 3)   AS bf,
             ROUND(AVG(refs), 3)                      AS refs,
             CONCAT(ROUND(AVG(FI), 3), ' / ',
                 ROUND(AVG(FP), 3), ' / ',

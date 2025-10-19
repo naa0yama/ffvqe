@@ -544,6 +544,9 @@ def _get_datafile_path(
     Returns:
         Tuple of (datafile_path, encode_configurations).
     """
+    import shutil
+    import sys
+
     encode_cfg: list[dict[str, Any]] = []
 
     # datafileの取得
@@ -560,6 +563,37 @@ def _get_datafile_path(
         # __datafile がある and --overwrite フラグがない
         with Path(datafile).open("r") as file:
             encode_cfg = json.load(file)
+    elif Path(datafile).exists() and getattr(args, "overwrite", False):
+        # __datafile がある and --overwrite フラグがある
+        distdir = Path(f"./videos/dist/{Path(configfile).name.replace('.yml', '')}")
+
+        # テスト中は input 関数を呼び出さない
+        is_test = configfile == "test_config.yml"
+
+        if not is_test:
+            print("\033[43mWARNING: THE FOLLOWING DATA WILL BE DELETED:\033[0m")  # noqa: T201
+            print(f"  - datafile: {datafile}")  # noqa: T201
+            if distdir.exists():
+                print(f"  - dest dir: {distdir} all files.")  # noqa: T201
+
+            confirm = input("\nDelete all files and start over? (y/n): ")
+            if confirm.lower() != "y":
+                print("Processing has been aborted.")  # noqa: T201
+                sys.exit(0)
+
+        # distdir ディレクトリを削除
+        if distdir.exists():
+            try:
+                shutil.rmtree(distdir)
+                print(f"Deleted: {distdir}")  # noqa: T201
+            except OSError as e:
+                print(f"WARNING: Failed to remove directory: {e}")  # noqa: T201
+
+        # distdir ディレクトリを再作成
+        distdir.mkdir(parents=True, exist_ok=True)
+        print(f"Recreated: {distdir}")  # noqa: T201
+
+        # encode_cfg は空のまま
 
     return datafile, encode_cfg
 
@@ -650,7 +684,7 @@ def _create_result_template(params: ResultTemplateParams) -> dict[str, Any]:
             "size_kbyte": 0.0,
             "stream": {
                 "gop": 0,
-                "has_b_frames": 0,
+                "max_consecutive_bframes": 0,
                 "refs": 0,
                 "frames": {"I": 0, "P": 0, "B": 0, "total": 0},
             },

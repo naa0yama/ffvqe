@@ -1,7 +1,7 @@
 #- -------------------------------------------------------------------------------------------------
 #- Runner
 #-
-FROM ghcr.io/naa0yama/join_logo_scp_trial:v25.10.00-beta3-ubuntu2404
+FROM ghcr.io/naa0yama/join_logo_scp_trial:v25.10.00-beta22-ubuntu2404
 ARG DEBIAN_FRONTEND=noninteractive \
 	USER_NAME=cuser \
 	USER_UID=60001 \
@@ -53,7 +53,9 @@ RUN echo "**** Create user ****" && \
 	groupadd --gid "${USER_GID}" "${USER_NAME}" && \
 	useradd -s /bin/bash --uid "${USER_UID}" --gid "${USER_GID}" -m "${USER_NAME}" && \
 	echo "${USER_NAME}:password" | chpasswd && \
-	passwd -d "${USER_NAME}"
+	passwd -d "${USER_NAME}" && \
+	groupadd -f render && \
+	usermod -aG video,render "${USER_NAME}"
 
 RUN echo "**** Add sudo user ****" && \
 	set -euxo pipefail && \

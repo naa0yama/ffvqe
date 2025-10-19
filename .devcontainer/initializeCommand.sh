@@ -6,6 +6,6 @@ mkdir -p ~/.claude/ ~/.config/gh
 
 # files from mounts
 touch \
-	~/.claude.json \
+	~/.claude/.config.json \
 	~/.gitconfig \
 	~/.gitignore_global

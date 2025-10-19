@@ -210,9 +210,6 @@ addopts = [
 	"--cov-report=html",
 ]
 
-[tool.setuptools-git-versioning]
-enabled = true
-
 [tool.sphinx-pyproject]
 autosummary_generate = true
 copyright = "2022, naa0yama"
@@ -244,7 +241,7 @@ todo_include_todos = true
 test = "pytest"
 testview = "python3 -m http.server 8000 --directory htmlcov/"
 build_pre = "python -m setuptools_scm --force-write-version-files"
-build_nuitka = "python -m nuitka --onefile --follow-imports --output-dir=dist src/ffvqe/main.py"
+build_nuitka = "python3 -m nuitka --onefile --follow-imports --output-dir=dist src/ffvqe/main.py"
 build = "bash -c 'rm -rf {build,dist}' && task build_pre && task build_nuitka"
 
 docs = "task doc_cleanup && task docs_apidoc && task docs_build"

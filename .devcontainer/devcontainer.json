@@ -4,7 +4,11 @@
 	"name": "Python3",
 	"dockerFile": "../Dockerfile",
 	"postCreateCommand": "./.devcontainer/postCreateCommand.sh",
-	"runArgs": ["--device=/dev/dri:/dev/dri"],
+	"runArgs": [
+		"--device=/dev/dri:/dev/dri",
+		"--group-add=video",
+		"--group-add=render"
+	],
 	// Features to add to the dev container. More info: https://containers.dev/features.
 	"features": {
 		"ghcr.io/devcontainers/features/github-cli:1": {}
@@ -15,7 +19,6 @@
 	"mounts": [
 		// Claude Code
 		"type=bind,source=${localEnv:HOME}/.claude,target=/home/cuser/.claude,consistency=cached",
-		"type=bind,source=${localEnv:HOME}/.claude.json,target=/home/cuser/.claude.json,consistency=cached",
 		// Git
 		"type=bind,source=${localEnv:HOME}/.gitignore_global,target=/home/cuser/.gitignore_global,consistency=cached",
 		// GitHub
@@ -31,6 +34,7 @@
 				"dprint.dprint", // 							Dprint Code Formatter
 				"EditorConfig.EditorConfig", // 				EditorConfig for VS Code
 				"Gruntfuggly.todo-tree", // 					Todo Tree
+				"janisdd.vscode-edit-csv", // 					Edit CSV
 				"littlefoxteam.vscode-python-test-adapter", // 	Python Test Explorer for Visual Studio Code
 				"markis.code-coverage", // 						Code Coverage
 				"ms-azuretools.vscode-containers", // 			Container Tools

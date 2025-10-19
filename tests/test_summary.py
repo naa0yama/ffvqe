@@ -43,5 +43,5 @@ def test_show_aggregated_results() -> None:
     with patch("duckdb.sql") as mock_sql:
         mock_sql.return_value = MagicMock()
         show_aggregated_results()
-        assert mock_sql.call_count == 2
-        assert mock_sql.return_value.show.call_count == 2
+        assert mock_sql.call_count == 3
+        assert mock_sql.return_value.show.call_count == 3

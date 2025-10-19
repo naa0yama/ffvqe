@@ -75,10 +75,8 @@ repos:
     hooks:
       - id: dprint
         name: dprint
-        entry: /bin/sh -c "cd . && dprint"
-        args: ["fmt", "--incremental=false"]
+        entry: dprint fmt --incremental=false --staged
         language: system
-        files: ".*" # This or types below, either way same error
         pass_filenames: false
         always_run: true
 
