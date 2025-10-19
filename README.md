@@ -181,23 +181,23 @@ ffmpeg -y -threads 4 -hide_banner -ignore_unknown -fflags +discardcorrupt+genpts
 
 Proxmox VE 上に Ubuntu 24.04 LST で実行します。
 
-|                 |                                                       |
-| :-------------- | :---------------------------------------------------- |
+|                 |                                                         |
+| :-------------- | :------------------------------------------------------ |
 | CPU             | 8 (1 sockets, 8 cores) `[x86-64-v3][numa=1][cpulimt=8]` |
-| Memory          | 16GB                                                  |
-| BOIS            | OVMF (UEFI)                                           |
-| Machine         | q35                                                   |
-| SCSI Controller | VirtIS SCSI                                           |
+| Memory          | 16GB                                                    |
+| BOIS            | OVMF (UEFI)                                             |
+| Machine         | q35                                                     |
+| SCSI Controller | VirtIS SCSI                                             |
 
 ![VM Settings](docs/d147d6e50edf.png)
 
-|  Host  |                                           |
-| :----- | :---------------------------------------- |
+| Host   |                                            |
+| :----- | :----------------------------------------- |
 | CPU    | 64 x AMD EPYC 7551P 32-Core Processor 2Ghz |
-| M/B    | Supermicro H11SSL-i                       |
-| Memory | 8 x 32GB DDR4-2133                        |
-| SSD    | 2x Intel 2.5inch 480GB D3-S4510 ZFS Miror |
-| GPU    | Sparkle Intel Arc A310 ELF 4GB SA310E-4G  |
+| M/B    | Supermicro H11SSL-i                        |
+| Memory | 8 x 32GB DDR4-2133                         |
+| SSD    | 2x Intel 2.5inch 480GB D3-S4510 ZFS Miror  |
+| GPU    | Sparkle Intel Arc A310 ELF 4GB SA310E-4G   |
 
 ## 利用方法
 
@@ -227,9 +227,12 @@ Proxmox VE 上に Ubuntu 24.04 LST で実行します。
   - `--encode` をつける事で設定ファイルの pattern 分エンコードし、 VMAF を計測後、 datafile に書き込む
   - 一度 `--encode` オプションで起動した後は同一のパラメータはハッシュで確認されるため重複しない
   - 最初からやり直す場合は `--overwrite` を付けることで可能
+    - `--overwrite` を付けると、既存の `data*.json` ファイルと `videos/dist/<profile>` ディレクトリ(エンコード済み動画、ffprobe、vmafログなど)が削除されます
+    - 削除前に確認プロンプトが表示されます
 
   ```bash
   ffvqe --config videos/av1_qsv-default-icq.yml --encode
+  ffvqe --config videos/av1_qsv-default-icq.yml --encode --overwrite  # 最初からやり直す場合
   ```
 
 - データをアーカイブする
@@ -296,6 +299,10 @@ EOF
 ```
 
 ### Intel HD (vaapi, Quick Sync Video)
+
+> [!NOTE]
+> コンテナ内には `vainfo` と Intel Arc310 で FFmpeg エンコードに必要なライブラリーが独自セットアップしてある。
+> apt によりコンテナ内でインストールすると競合する可能性があるのでこれは母艦でやる
 
 ```bash
 sudo apt install hwinfo intel-gpu-tools vainfo
@@ -447,12 +454,17 @@ curl https://get.docker.com | sh \
 ```bash
 mkdir -p ./docs/{decoders,encoders,filters}
 for decoder in libdav1d av1 av1_qsv h264 h264_qsv hevc hevc_qsv mpeg2video mpeg2_qsv vp9_qsv
+mkdir -p ./docs/{decoders,encoders,filters}
+for decoder in libdav1d av1 av1_qsv h264 h264_qsv hevc hevc_qsv mpeg2video mpeg2_qsv vp9_qsv
 do
+  ffmpeg -hide_banner -h decoder=${decoder}    > ./docs/decoders/decoder_${decoder}.txt
   ffmpeg -hide_banner -h decoder=${decoder}    > ./docs/decoders/decoder_${decoder}.txt
 done
 
 for encoder in libsvtav1 av1_qsv libx264 h264_qsv libx265 hevc_qsv mpeg2_qsv vp9_qsv libopus
+for encoder in libsvtav1 av1_qsv libx264 h264_qsv libx265 hevc_qsv mpeg2_qsv vp9_qsv libopus
 do
+  ffmpeg -hide_banner -h encoder=${encoder}    > ./docs/encoders/encoder_${encoder}.txt
   ffmpeg -hide_banner -h encoder=${encoder}    > ./docs/encoders/encoder_${encoder}.txt
 done
 
@@ -466,22 +478,145 @@ done
 
 [FFmpeg Filters Documentation](https://ffmpeg.org/ffmpeg-filters.html#Examples-91)
 
-### assets の初期化
+## assets の初期化
+
+履歴から assets ディレクトリを完全に削除し、リポジトリサイズを削減します。
+
+### 事前確認
 
 ```bash
+# 現在のリポジトリサイズを確認
 $ du -sh .git
-263M    .git
+767M    .git
 ```
 
-変更オブジェクトがない状態で実施する必要がある
+⚠️ **重要な注意事項：**
+
+- 変更オブジェクトがない状態(clean working tree)で実施する必要があります
+- チームメンバーに事前通知し、作業中は push しないよう依頼してください
+- この作業により Git の履歴が書き換えられます
+
+### 手順
+
+- **ステップ1: 新しいクローンを作成**
+
+  ```bash
+  cd /tmp
+  git clone git@github.com:naa0yama/ffvqe.git
+  cd ffvqe
+  ```
+
+- **ステップ2: 現在のリポジトリサイズと大きなファイルを確認**
+
+  ```bash
+  # .git ディレクトリのサイズを確認
+  du -sh .git
+
+  # 大きなファイルを特定するスクリプトをダウンロード
+  wget -O /tmp/git_find_big.sh \
+      https://confluence.atlassian.com/bitbucket/files/321848291/321979854/1/1360604134990/git_find_big.sh
+
+  # 大きなファイルのリストを表示
+  bash /tmp/git_find_big.sh | head -15
+  ```
+
+- **ステップ3: git-filter-repo をインストール**
+
+  ```bash
+  # 手動インストール
+  wget -O /tmp/git-filter-repo \
+      https://raw.githubusercontent.com/newren/git-filter-repo/main/git-filter-repo
+  chmod +x /tmp/git-filter-repo
+  mv /tmp/git-filter-repo ~/.local/bin/
+
+  # バージョン確認
+  git filter-repo --version
+  ```
+
+- **ステップ4: assets ディレクトリを履歴から削除**
+
+  ```bash
+  # filter-repo を実行(origin リモートが自動削除されます)
+  git filter-repo --path assets/ --invert-paths
+
+  # 削除されたことを確認
+  echo "=== assets を含むコミット数(0 になるはず) ==="
+  git log --all --oneline -- assets/ | wc -l
+
+  echo "=== リポジトリサイズ(大幅に削減されているはず) ==="
+  du -sh .git
+
+  echo "=== 大きなファイルの確認(assets/ ファイルが消えているはず) ==="
+  bash /tmp/git_find_big.sh | head -10
+  ```
+
+- **ステップ5: リモートを再追加**
+
+  ```bash
+  git remote add origin git@github.com:naa0yama/ffvqe.git
+  git remote -v
+  ```
+
+  ⚠️ **重要: ここで `git fetch origin` を実行しないでください！**
+  fetch すると元の履歴(assets 含む)がダウンロードされ、削除作業が無駄になります。
+
+- **ステップ6: すべてのブランチを強制プッシュ**
+
+  ```bash
+  # すべてのブランチを強制プッシュ
+  git push --force --all origin
+
+  # タグもプッシュ(もしあれば)
+  git push --force --tags origin
+  ```
+
+- **ステップ7: 検証 - 新しいクローンで削除を確認**
+
+  ```bash
+  # 別のディレクトリで検証用のクローンを作成
+  cd /tmp
+  git clone git@github.com:naa0yama/ffvqe.git ffvqe-verify
+  cd ffvqe-verify
+
+  # 検証
+  echo "=== .git サイズ(2-3MB 程度になるはず) ==="
+  du -sh .git
+
+  echo "=== assets を含むコミット数(0 のはず) ==="
+  git log --all --oneline -- assets/ | wc -l
+
+  echo "=== 大きなファイルの確認 ==="
+  bash /tmp/git_find_big.sh | head -10
+  ```
+
+- **ステップ8: (オプション)assets ディレクトリを再作成**
+
+  新しい空の assets ディレクトリが必要な場合：
+
+  ```bash
+  # 作業用のリポジトリで実行
+  cd /path/to/your/working/ffvqe
+
+  # 新しい空のディレクトリを作成
+  mkdir -p assets
+  touch assets/.gitkeep
+
+  git add assets/
+  git commit -m "chore: reset assets directory"
+  git push origin main
+  ```
+
+### チームメンバーへの通知
+
+履歴を書き換えた後、チーム全員に以下を実施してもらう必要があります：
 
 ```bash
-git filter-branch --force --index-filter 'git rm --cached --ignore-unmatch -r assets/' -- --all
-git gc --aggressive --prune=now
-git push --all --force origin
+# 既存のクローンを削除
+cd /path/to/parent/directory
+rm -rf ffvqe
 
-mkdir -p assets
-touch assets/.gitkeep
+# 新しくクローン
+git clone git@github.com:naa0yama/ffvqe.git
 ```
 
 ### データを利用する
