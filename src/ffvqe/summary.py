@@ -45,21 +45,28 @@ def show_aggregated_results() -> None:
         """
         SELECT
             ref_type,
+            preset,
             ROUND(AVG(outfile_size_kbyte), 3)        AS outfile_size_kbyte,
             ROUND(AVG(outfile_bit_rate_kbs), 3)      AS outfile_bit_rate_kbs,
             ROUND(AVG(enc_sec), 3)                   AS enc_sec,
-            ROUND(AVG(comp_ratio_persent), 3)        AS comp_ratio_persent,
+            ROUND(AVG(outfile_size_percent), 3)      AS outfile_size_percent,
             ROUND(AVG(ssim_mean), 3)                 AS ssim_mean,
             ROUND(AVG(vmaf_min), 3)                  AS vmaf_min,
             ROUND(AVG(vmaf_mean), 3)                 AS vmaf_mean,
+            ROUND(
+                AVG(
+                    (1 - outfile_size_percent) * 85 +            -- 圧縮効率(85%)
+                    GREATEST(0, 10 - (vmaf_mean - 93) * 2) +     -- 93がベスト、超過でペナルティ(10%)
+                    (vmaf_min / 100) * 5                         -- 最低品質(5%)
+                ), 3)                                AS score,
             outfile_options
         FROM encodes
         WHERE
             ref_type like 'Anime' AND
             vmaf_mean >= 93.00 AND
             vmaf_mean <= 100.00
-        GROUP BY ref_type, outfile_options
-        ORDER BY outfile_options DESC
+        GROUP BY ref_type, preset, outfile_options
+        ORDER BY score DESC
         LIMIT 5
     """,
     ).show()
@@ -67,21 +74,28 @@ def show_aggregated_results() -> None:
         """
         SELECT
             ref_type,
+            preset,
             ROUND(AVG(outfile_size_kbyte), 3)        AS outfile_size_kbyte,
             ROUND(AVG(outfile_bit_rate_kbs), 3)      AS outfile_bit_rate_kbs,
             ROUND(AVG(enc_sec), 3)                   AS enc_sec,
-            ROUND(AVG(comp_ratio_persent), 3)        AS comp_ratio_persent,
+            ROUND(AVG(outfile_size_percent), 3)      AS outfile_size_percent,
             ROUND(AVG(ssim_mean), 3)                 AS ssim_mean,
             ROUND(AVG(vmaf_min), 3)                  AS vmaf_min,
             ROUND(AVG(vmaf_mean), 3)                 AS vmaf_mean,
+            ROUND(
+                AVG(
+                    (1 - outfile_size_percent) * 85 +            -- 圧縮効率(85%)
+                    GREATEST(0, 10 - (vmaf_mean - 93) * 2) +     -- 93がベスト、超過でペナルティ(10%)
+                    (vmaf_min / 100) * 5                         -- 最低品質(5%)
+                ), 3)                                AS score,
             outfile_options
         FROM encodes
         WHERE
             ref_type like 'Nature' AND
             vmaf_mean >= 93.00 AND
             vmaf_mean <= 100.00
-        GROUP BY ref_type, outfile_options
-        ORDER BY outfile_options DESC
+        GROUP BY ref_type, preset, outfile_options
+        ORDER BY score DESC
         LIMIT 5
     """,
     ).show()
@@ -91,30 +105,36 @@ def show_aggregated_results() -> None:
         SELECT
             codec,
             type,
+            preset,
             ROUND(AVG(outfile_size_kbyte), 3)        AS outfile_size_kbyte,
             ROUND(AVG(outfile_bit_rate_kbs), 3)      AS outfile_bit_rate_kbs,
+            ROUND(AVG(outfile_bit_rate_kbs) * (60*24)/8/1024, 3) AS "24min/size_mb",
             ROUND(AVG(enc_sec), 3)                   AS enc_sec,
-            ROUND(AVG(comp_ratio_persent), 3)        AS comp_ratio_persent,
+            ROUND(AVG(outfile_size_percent), 3)      AS outfile_size_percent,
             ROUND(AVG(ssim_mean), 3)                 AS ssim_mean,
             ROUND(AVG(vmaf_min), 3)                  AS vmaf_min,
             ROUND(AVG(vmaf_mean), 3)                 AS vmaf_mean,
-            ROUND(AVG((200 - (vmaf_min + vmaf_mean)) +
-                (2 - (ssim_mean + comp_ratio_persent))), 3) AS pt,
+            ROUND(
+                AVG(
+                    (1 - outfile_size_percent) * 85 +            -- 圧縮効率(85%)
+                    GREATEST(0, 10 - (vmaf_mean - 93) * 2) +     -- 93がベスト、超過でペナルティ(10%)
+                    (vmaf_min / 100) * 5                         -- 最低品質(5%)
+                ), 3)                                AS score,
             ROUND(AVG(gop), 3)                       AS gop,
             ROUND(AVG(max_consecutive_bframes), 3)   AS bf,
             ROUND(AVG(refs), 3)                      AS refs,
             CONCAT(ROUND(AVG(FI), 3), ' / ',
                 ROUND(AVG(FP), 3), ' / ',
                 ROUND(AVG(FB), 3))                   AS "I/P/B frames",
-            outfile_options,
+            outfile_options
         FROM encodes
         WHERE
-            comp_ratio_persent >= 0.60 AND
+            outfile_size_percent <= 0.50 AND
             ssim_mean >= 0.99 AND
             vmaf_mean >= 93.00 AND
             vmaf_mean <= 100.00
-        GROUP BY codec, type, outfile_options
-        ORDER BY pt DESC
+        GROUP BY codec, type, preset, outfile_options
+        ORDER BY score DESC
         """,
     ).show()
 

@@ -698,7 +698,7 @@ def _create_result_template(params: ResultTemplateParams) -> dict[str, Any]:
                 "fps": 0,
                 "speed": 0.0,
             },
-            "compression_ratio_persent": 0.0,
+            "outfile_size_percent": 0.0,
             "probe": {
                 "second": 0.0,
                 "time": "",
@@ -773,7 +773,7 @@ def _generate_encoding_configs(
                         print(  # noqa: T201
                             "encode new ...",
                             f"basefile: {ref['name']:12}",
-                            f"preset: {result_template['preset']:8}",
+                            f"preset: {result_template['preset']:10}",
                             f"codec: {result_template['codec']:12}",
                             f"type: {result_template['type']:24}",
                             f"options: {result_template['outfile']['options']}",

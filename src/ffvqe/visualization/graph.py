@@ -123,7 +123,7 @@ class GraphVisualizer:
             outfile.stream.frames.b                                AS stream_frames_b,
             results.encode.second                                  AS enc_sec,
             results.encode.time                                    AS enc_time,
-            results.compression_ratio_persent                      AS comp_ratio_persent,
+            results.outfile_size_percent                           AS outfile_size_percent,
             results.encode.speed                                   AS enc_speed,
             results.vmaf.pooled_metrics.float_ssim.min             AS ssim_min,
             results.vmaf.pooled_metrics.float_ssim.harmonic_mean   AS ssim_mean,

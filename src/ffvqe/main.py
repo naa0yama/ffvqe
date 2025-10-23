@@ -231,12 +231,9 @@ def main_encode(config: dict[str, Any], args: argparse.Namespace) -> None:
                                 / __encode_rep["elapsed_time"]
                             ),
                         },
-                        "compression_ratio_persent": (
-                            1
-                            - (
-                                float(__probe_log["format"]["size"])
-                                / float(__base_probe_log["format"]["size"])
-                            )
+                        "outfile_size_percent": (
+                            float(__probe_log["format"]["size"])
+                            / float(__base_probe_log["format"]["size"])
                         ),
                         "probe": {
                             "second": __encode_rep["elapsed_prbt"],
