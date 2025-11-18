@@ -11,6 +11,8 @@ from unittest.mock import patch
 import pytest
 
 from ffvqe.summary import create_temp_table
+from ffvqe.summary import generate_grouped_csvs
+from ffvqe.summary import insert_codec_defaults
 from ffvqe.summary import show_aggregated_results
 
 
@@ -40,8 +42,60 @@ def test_create_temp_table(mock_csv_data: str) -> None:
 
 
 def test_show_aggregated_results() -> None:
-    with patch("duckdb.sql") as mock_sql:
+    with (
+        patch("duckdb.sql") as mock_sql,
+        patch("duckdb.execute") as mock_execute,
+    ):
+        # Mock execute to return empty result for existing codecs query
+        mock_result = MagicMock()
+        mock_result.fetchall.return_value = []
+        mock_execute.return_value = mock_result
+
         mock_sql.return_value = MagicMock()
         show_aggregated_results()
-        assert mock_sql.call_count == 3
-        assert mock_sql.return_value.show.call_count == 3
+
+        # The function should return early if no codecs exist
+        # So execute should be called at least once (to get existing codecs)
+        assert mock_execute.call_count >= 1
+
+
+def test_insert_codec_defaults() -> None:
+    """Test inserting codec default values."""
+    with (
+        patch("duckdb.execute") as mock_execute,
+        patch("ffvqe.summary.logger") as mock_logger,
+    ):
+        # Mock existing codec/type combinations
+        mock_result = MagicMock()
+        mock_result.fetchall.return_value = [("libx264", "CRF"), ("libx265", "CRF")]
+        mock_result.fetchone.return_value = (2,)
+        mock_execute.return_value = mock_result
+
+        insert_codec_defaults()
+
+        # Verify execute was called to get existing codec/type pairs and insert defaults
+        assert mock_execute.call_count >= 3  # Get codec/type pairs, insert x2, get count
+        mock_logger.info.assert_called()
+
+
+def test_generate_grouped_csvs() -> None:
+    """Test generating grouped CSV files."""
+    with (
+        patch("duckdb.sql") as mock_sql,
+        patch("ffvqe.summary.logger") as mock_logger,
+    ):
+        mock_result = MagicMock()
+        mock_sql.return_value = mock_result
+
+        generate_grouped_csvs("test_type.csv", "test_option.csv")
+
+        # Verify SQL was called twice (once for each CSV)
+        assert mock_sql.call_count == 2
+        assert mock_result.write_csv.call_count == 2
+
+        # Verify the correct filenames were used
+        mock_result.write_csv.assert_any_call("test_type.csv")
+        mock_result.write_csv.assert_any_call("test_option.csv")
+
+        # Verify logging
+        mock_logger.info.assert_called()

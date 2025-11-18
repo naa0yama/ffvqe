@@ -256,3 +256,4 @@ videos/dist/
 videos/source/
 tasks.md
 tmp.*
+logs_archive.tar.xz

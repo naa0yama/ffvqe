@@ -48,9 +48,7 @@ def test_create_argument_parser() -> None:
 def mock_config() -> dict:
     """設定ファイルのモックデータを提供する。"""
     return {
-        "configs": {
-            "datafile": "/path/to/datafile.json",
-        },
+        "datafile": "/path/to/datafile.json",
     }
 
 
@@ -341,7 +339,7 @@ def test_main_with_encode(mocker: MockerFixture) -> None:
     mock_path.return_value.mkdir = MagicMock()
 
     # load_configのモック
-    mock_config = {"configs": {"datafile": "/path/to/datafile.json"}}
+    mock_config = {"datafile": "/path/to/datafile.json"}
     mocker.patch("ffvqe.main.load_config", return_value=mock_config)
 
     # main_encodeのモック

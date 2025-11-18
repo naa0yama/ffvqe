@@ -11,7 +11,6 @@ from typing import Any
 
 from ffvqe.config.loader import load_config
 from ffvqe.utils.file_operations import compress_files
-from ffvqe.utils.yaml_handler import create_yaml_handler
 
 
 def archive(config_path: str, args: object) -> None:
@@ -27,7 +26,7 @@ def archive(config_path: str, args: object) -> None:
     __configs: dict[str, Any] = load_config(configfile=config_path, args=args)
     __configfile: Path = Path(config_path)
     __basedir: Path = Path(f"./videos/dist/{__configfile.name.replace('.yml', '')}")
-    __datafile: Path = Path(f"{__configs['configs']['datafile']}")
+    __datafile: Path = Path(f"{__configs['datafile']}")
     __datafilecsv_all: Path = Path(f"{__datafile}".replace(".json", "_all.csv"))
     __datafilecsv_gby_option: Path = Path(f"{__datafile}".replace(".json", "_gby_option.csv"))
     __datafilecsv_gby_type: Path = Path(f"{__datafile}".replace(".json", "_gby_type.csv"))
@@ -73,15 +72,6 @@ def archive(config_path: str, args: object) -> None:
             print(f"[ARCHIVE] move: {file} to {__assetdir.parent}/{file.name}")  # noqa: T201
         else:
             print(f"[ARCHIVE] file not found: {file}")  # noqa: T201
-
-    yaml = create_yaml_handler()
-    with Path(f"{__assetdir.parent}/{__configfile.name}").open("r") as __file:
-        ____data = yaml.load(__file)
-    ____data["configs"]["datafile"] = f"{__assetdir.parent}/{__datafile.name}"
-
-    print(f"[ARCHIVE] dataset name overwrite file: {__assetdir.parent}/{__datafile.name}")  # noqa: T201
-    with Path(f"{__assetdir.parent}/{__configfile.name}").open("w") as ___file:
-        yaml.dump(____data, ___file)
 
     if __basedir.exists():
         print(f"[ARCHIVE] remove dist directory: {__basedir}")  # noqa: T201

@@ -120,7 +120,7 @@ def main_encode(config: dict[str, Any], args: argparse.Namespace) -> None:
         config: Configuration dictionary.
         args: Command line arguments.
     """
-    __datafile: str = config["configs"]["datafile"]
+    __datafile: str = config["datafile"]
     with Path(__datafile).open("r") as file:
         __encode_cfg = json.load(file)
 
@@ -293,7 +293,7 @@ def main() -> None:
     __configs: dict[str, Any] = load_config(configfile=args.config, args=args)
     if args.encode or args.encode_tv:
         main_encode(config=__configs, args=args)
-        getcsv(datafile=__configs["configs"]["datafile"])
+        getcsv(datafile=__configs["datafile"])
 
 
 if __name__ == "__main__":

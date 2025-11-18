@@ -133,5 +133,14 @@ RUN echo "**** asdf install plugin install ****" && \
 	asdf install python && \
 	asdf install
 
+# Ref: https://docs.anthropic.com/en/docs/claude-code/setup#native-binary-installation-beta
+RUN echo "**** Install Claude Code ****" && \
+	set -euxo pipefail && \
+	curl -fsSL https://claude.ai/install.sh | bash && \
+	echo -e "\n# Claude Code\nexport PATH=\"\$HOME/.local/bin:\$PATH\"\nalias cc=\"claude --dangerously-skip-permissions\"" | tee -a "/home/${USER_NAME}/.bashrc" && \
+	exec ${SHELL} -l && \
+	claude --version && \
+	type cc
+
 ENTRYPOINT [ "/bin/bash", "-c" ]
 CMD [ "" ]

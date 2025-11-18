@@ -529,7 +529,7 @@ def _validate_references(configs: dict[str, Any], args: object, configfile: str)
     _verify_references(configs)
 
 
-def _get_datafile_path(
+def _get_datafile_path(  # noqa: C901
     configs: dict[str, Any],
     configfile: str,
     args: object,
@@ -557,9 +557,19 @@ def _get_datafile_path(
 
     # __datafile が設定されてなく、
     if datafile == "":
-        datafile = f"{Path(configfile).parent}/data{str(uuid4())[24:]}.json"
-        configs["configs"]["datafile"] = datafile
-    elif Path(datafile).exists() and not getattr(args, "overwrite", False):
+        # 新規作成時は yaml と同じディレクトリに配置
+        new_datafile_name = f"data{str(uuid4())[24:]}.json"
+        datafile = str(Path(configfile).parent / new_datafile_name)
+        # yaml には相対パスで保存
+        configs["configs"]["datafile"] = new_datafile_name
+    else:
+        # 既存の datafile パスを解決
+        datafile_path = Path(datafile)
+        if not datafile_path.is_absolute():
+            # 相対パスの場合、config yaml と同じディレクトリからの相対パスとして解決
+            datafile = str(Path(configfile).parent / datafile_path)
+
+    if Path(datafile).exists() and not getattr(args, "overwrite", False):
         # __datafile がある and --overwrite フラグがない
         with Path(datafile).open("r") as file:
             encode_cfg = json.load(file)

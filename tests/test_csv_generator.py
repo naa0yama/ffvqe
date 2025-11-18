@@ -45,16 +45,14 @@ def test_getcsv_file_naming(
     mock_duckdb: MagicMock,
 ) -> None:
     """Test CSV file naming logic."""
-    getcsv(sample_json, mock_duckdb.connect.return_value)
+    getcsv(sample_json, db_connection=mock_duckdb.connect.return_value)
 
-    # Verify SQL calls
-    assert mock_duckdb.connect.return_value.sql.call_count == 3
+    # Verify SQL calls - now only generates _all.csv
+    assert mock_duckdb.connect.return_value.sql.call_count == 1
     calls = mock_duckdb.connect.return_value.sql.call_args_list
 
-    # Verify SQL queries
+    # Verify SQL query
     assert calls[0][0][0].strip().startswith("SELECT")
-    assert calls[1][0][0].strip().startswith("SELECT")
-    assert calls[2][0][0].strip().startswith("SELECT")
 
 
 @pytest.mark.usefixtures("mock_json_data")
@@ -63,7 +61,7 @@ def test_getcsv_creates_table(
     mock_duckdb: MagicMock,
 ) -> None:
     """Test temporary table creation."""
-    getcsv(sample_json, mock_duckdb.connect.return_value)
+    getcsv(sample_json, db_connection=mock_duckdb.connect.return_value)
 
     mock_duckdb.connect.return_value.execute.assert_called_once()
     query = mock_duckdb.connect.return_value.execute.call_args[0][0]
@@ -78,7 +76,7 @@ def test_getcsv_prints_messages(
     capsys: CaptureFixture,
 ) -> None:
     """Test console output messages."""
-    getcsv(sample_json, mock_duckdb.connect.return_value)
+    getcsv(sample_json, db_connection=mock_duckdb.connect.return_value)
     captured = capsys.readouterr()
 
     assert "[CSV   ] load" in captured.out
@@ -92,19 +90,14 @@ def test_getcsv_generates_correct_filenames(
     mock_duckdb: MagicMock,
 ) -> None:
     """Test generated CSV filenames."""
-    getcsv(sample_json, mock_duckdb.connect.return_value)
+    getcsv(sample_json, db_connection=mock_duckdb.connect.return_value)
 
     base = str(Path(sample_json).with_suffix(""))
-    expected_files = [
-        f"{base}_all.csv",
-        f"{base}_gby_type.csv",
-        f"{base}_gby_option.csv",
-    ]
+    expected_file = f"{base}_all.csv"
 
-    # Verify write_csv calls were made with correct filenames
+    # Verify write_csv call was made with correct filename
     mock_write_csv = mock_duckdb.connect.return_value.sql.return_value.write_csv
-    assert mock_write_csv.call_count == 3
+    assert mock_write_csv.call_count == 1
 
-    # Check that each expected file was used in a write_csv call
-    for expected_file in expected_files:
-        mock_write_csv.assert_any_call(expected_file)
+    # Check that the expected file was used in the write_csv call
+    mock_write_csv.assert_called_once_with(expected_file)

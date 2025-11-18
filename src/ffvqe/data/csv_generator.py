@@ -55,7 +55,10 @@ def create_temporary_table(connection: duckdb.DuckDBPyConnection, datafile: str)
     )
 
 
-def getcsv(datafile: str, db_connection: duckdb.DuckDBPyConnection | None = None) -> None:  # type: ignore[no-any-unimported]
+def getcsv(  # type: ignore[no-any-unimported]
+    datafile: str,
+    db_connection: duckdb.DuckDBPyConnection | None = None,
+) -> None:
     """Generate CSV files from JSON data.
 
     Processes the JSON data file and generates three CSV files:
@@ -77,9 +80,7 @@ def getcsv(datafile: str, db_connection: duckdb.DuckDBPyConnection | None = None
     create_temporary_table(con, datafile)
 
     # Generate CSV files if data exists
-    __csvfile_all: str = f"{datafile}".replace(".json", "_all.csv", 1)
-    __csvfile_type: str = f"{datafile}".replace(".json", "_gby_type.csv", 1)
-    __csvfile_option: str = f"{datafile}".replace(".json", "_gby_option.csv", 1)
+    __csvfile_all = f"{datafile}".replace(".json", "_all.csv", 1)
 
     print("Export csv .....")  # noqa: T201
 
@@ -117,68 +118,5 @@ def getcsv(datafile: str, db_connection: duckdb.DuckDBPyConnection | None = None
         FROM encodes
     """
     con.sql(all_query).write_csv(__csvfile_all)
-
-    # Generate type grouped CSV
-    type_query = r"""
-        SELECT
-            row_number() OVER () - 1                                   AS index,
-            codec                                                      AS codec,
-            type                                                       AS type,
-            preset                                                     AS preset,
-            threads                                                    AS threads,
-            MAX(outfile.stream.gop)                                    AS gop,
-            MAX(outfile.stream.max_consecutive_bframes)                AS max_consecutive_bframes,
-            MAX(outfile.stream.refs)                                   AS refs,
-            MAX(outfile.stream.frames.I)                               AS fI,
-            MAX(outfile.stream.frames.P)                               AS fP,
-            MAX(outfile.stream.frames.B)                               AS fB,
-            MAX(outfile.stream.frames.total)                           AS fT,
-            infile.type                                                AS ref_type,
-            AVG(outfile.size_kbyte)                                    AS outfile_size_kbyte,
-            AVG(outfile.bit_rate_kbs)                                  AS outfile_bit_rate_kbs,
-            outfile.options                                            AS outfile_options,
-            AVG(results.encode.second)                                 AS enc_sec,
-            AVG(results.outfile_size_percent)                          AS outfile_size_percent,
-            AVG(results.encode.speed)                                  AS enc_speed,
-            AVG(results.vmaf.second)                                   AS vmaf_sec,
-            AVG(results.vmaf.pooled_metrics.float_ssim.min)            AS ssim_min,
-            AVG(results.vmaf.pooled_metrics.float_ssim.harmonic_mean)  AS ssim_mean,
-            AVG(results.vmaf.pooled_metrics.vmaf.min)                  AS vmaf_min,
-            AVG(results.vmaf.pooled_metrics.vmaf.harmonic_mean)        AS vmaf_mean
-        FROM encodes
-        GROUP BY codec, type, preset, threads, ref_type, outfile_options
-    """
-    con.sql(type_query).write_csv(__csvfile_type)
-
-    # Generate option grouped CSV
-    option_query = r"""
-        SELECT
-            row_number() OVER () - 1                                   AS index,
-            codec                                                      AS codec,
-            type                                                       AS type,
-            preset                                                     AS preset,
-            threads                                                    AS threads,
-            MAX(outfile.stream.gop)                                    AS gop,
-            MAX(outfile.stream.max_consecutive_bframes)                AS max_consecutive_bframes,
-            MAX(outfile.stream.refs)                                   AS refs,
-            MAX(outfile.stream.frames.I)                               AS fI,
-            MAX(outfile.stream.frames.P)                               AS fP,
-            MAX(outfile.stream.frames.B)                               AS fB,
-            MAX(outfile.stream.frames.total)                           AS fT,
-            AVG(outfile.size_kbyte)                                    AS outfile_size_kbyte,
-            AVG(outfile.bit_rate_kbs)                                  AS outfile_bit_rate_kbs,
-            outfile.options                                            AS outfile_options,
-            AVG(results.encode.second)                                 AS enc_sec,
-            AVG(results.outfile_size_percent)                          AS outfile_size_percent,
-            AVG(results.encode.speed)                                  AS enc_speed,
-            AVG(results.vmaf.second)                                   AS vmaf_sec,
-            AVG(results.vmaf.pooled_metrics.float_ssim.min)            AS ssim_min,
-            AVG(results.vmaf.pooled_metrics.float_ssim.harmonic_mean)  AS ssim_mean,
-            AVG(results.vmaf.pooled_metrics.vmaf.min)                  AS vmaf_min,
-            AVG(results.vmaf.pooled_metrics.vmaf.harmonic_mean)        AS vmaf_mean
-        FROM encodes
-        GROUP BY codec, type, preset, threads, outfile_options
-    """
-    con.sql(option_query).write_csv(__csvfile_option)
 
     print("Export csv done.")  # noqa: T201
