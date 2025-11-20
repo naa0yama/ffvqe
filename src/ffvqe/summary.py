@@ -269,7 +269,7 @@ def generate_grouped_csvs(csvfile_type: str, csvfile_option: str) -> None:
             ref_type,
             AVG(outfile_size_kbyte)                 AS outfile_size_kbyte,
             AVG(outfile_bit_rate_kbs)               AS outfile_bit_rate_kbs,
-            outfile_base,
+            STRING_AGG(DISTINCT outfile_base, ' / ' ORDER BY outfile_base) AS outfile_base,
             outfile_options,
             AVG(enc_sec)                            AS enc_sec,
             AVG(outfile_size_percent)               AS outfile_size_percent,
@@ -281,7 +281,7 @@ def generate_grouped_csvs(csvfile_type: str, csvfile_option: str) -> None:
             AVG(vmaf_mean)                          AS vmaf_mean,
             AVG(score)                              AS score
         FROM scored_data
-        GROUP BY codec, type, preset, threads, ref_type, outfile_base, outfile_options
+        GROUP BY codec, type, preset, threads, ref_type, outfile_options
         """,
     ).write_csv(csvfile_type)
     logger.info("[CSV] Generated %s", csvfile_type)
@@ -318,7 +318,7 @@ def generate_grouped_csvs(csvfile_type: str, csvfile_option: str) -> None:
             MAX(fT)                                 AS fT,
             AVG(outfile_size_kbyte)                 AS outfile_size_kbyte,
             AVG(outfile_bit_rate_kbs)               AS outfile_bit_rate_kbs,
-            outfile_base,
+            STRING_AGG(DISTINCT outfile_base, ' / ' ORDER BY outfile_base) AS outfile_base,
             outfile_options,
             AVG(enc_sec)                            AS enc_sec,
             AVG(outfile_size_percent)               AS outfile_size_percent,
@@ -330,7 +330,7 @@ def generate_grouped_csvs(csvfile_type: str, csvfile_option: str) -> None:
             AVG(vmaf_mean)                          AS vmaf_mean,
             AVG(score)                              AS score
         FROM scored_data
-        GROUP BY codec, type, preset, threads, outfile_base, outfile_options
+        GROUP BY codec, type, preset, threads, outfile_options
         """,
     ).write_csv(csvfile_option)
     logger.info("[CSV] Generated %s", csvfile_option)
@@ -416,10 +416,10 @@ def show_aggregated_results() -> None:
                 printf('%+7.3f', ROUND(AVG(score), 3) - (SELECT default_score FROM default_values d WHERE d.codec = scored_data.codec LIMIT 1)),
                 ')'
             ) AS score,
-            outfile_base,
+            STRING_AGG(DISTINCT outfile_base, ' / ' ORDER BY outfile_base) AS outfile_base,
             outfile_options
         FROM scored_data
-        GROUP BY codec, ref_type, preset, outfile_base, outfile_options
+        GROUP BY codec, ref_type, preset, outfile_options
         ORDER BY AVG(score) DESC
         LIMIT 5
     """,
@@ -478,10 +478,10 @@ def show_aggregated_results() -> None:
                 printf('%+7.3f', ROUND(AVG(score), 3) - (SELECT default_score FROM default_values d WHERE d.codec = scored_data.codec LIMIT 1)),
                 ')'
             ) AS score,
-            outfile_base,
+            STRING_AGG(DISTINCT outfile_base, ' / ' ORDER BY outfile_base) AS outfile_base,
             outfile_options
         FROM scored_data
-        GROUP BY codec, ref_type, preset, outfile_base, outfile_options
+        GROUP BY codec, ref_type, preset, outfile_options
         ORDER BY AVG(score) DESC
         LIMIT 5
     """,
@@ -585,11 +585,11 @@ def show_aggregated_results() -> None:
                 CONCAT(ROUND(AVG(fI), 3), ' / ',
                     ROUND(AVG(fP), 3), ' / ',
                     ROUND(AVG(fB), 3))                   AS "I/P/B frames",
-                outfile_base,
+                STRING_AGG(DISTINCT outfile_base, ' / ' ORDER BY outfile_base) AS outfile_base,
                 outfile_options,
                 1 AS sort_order
             FROM scored_encodes
-            GROUP BY codec, type, preset, outfile_base, outfile_options
+            GROUP BY codec, type, preset, outfile_options
         ),
         combined AS (
             SELECT * FROM default_values
