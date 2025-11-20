@@ -3,6 +3,7 @@
 {
 	"name": "ffvqe",
 	"dockerFile": "../Dockerfile",
+	"initializeCommand": "./.devcontainer/initializeCommand.sh",
 	"postCreateCommand": "./.devcontainer/postCreateCommand.sh",
 	"runArgs": [
 		"--device=/dev/dri:/dev/dri",
