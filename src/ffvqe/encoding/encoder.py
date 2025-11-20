@@ -64,8 +64,8 @@ def _build_ffmpeg_command(encode_cfg: dict[str, Any], ffmpeg_threads: int) -> li
             ffmpeg_cmd.append("-preset:v")
             ffmpeg_cmd.append(f"{encode_cfg['preset']}")
 
-        if encode_cfg["outfile"]["options"] != []:
-            ffmpeg_cmd.extend(str(encode_cfg["outfile"]["options"]).split())
+        if encode_cfg["outfile"]["encode_options"]:
+            ffmpeg_cmd.extend(str(encode_cfg["outfile"]["encode_options"]).split())
 
         ffmpeg_cmd.append(f"{encode_cfg['outfile']['filename']}.mkv")
 
@@ -196,7 +196,7 @@ def encoding(
     probe_filename, elapsed_time_prbt = _run_ffprobe(encode_cfg, probe_timeout)
 
     # Get encode options for parameter extraction
-    encode_options = encode_cfg.get("outfile", {}).get("options", "")
+    encode_options = encode_cfg.get("outfile", {}).get("encode_options", "")
 
     # Return results
     return {

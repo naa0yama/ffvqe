@@ -34,9 +34,11 @@ def _get_default_patterns() -> list[dict[str, Any]]:
             "presets": ["medium"],
             "infile": {"option": ""},
             "outfile": {
-                "options": [
-                    "-crf 23",
+                "base": [
+                    {"type": "Anime", "option": "-crf 23"},
+                    {"type": "Nature", "option": "-crf 23"},
                 ],
+                "options": [""],
             },
             "hwaccels": "",
         },
@@ -47,9 +49,11 @@ def _get_default_patterns() -> list[dict[str, Any]]:
             "presets": ["medium"],
             "infile": {"option": ""},
             "outfile": {
-                "options": [
-                    "-crf 23",
+                "base": [
+                    {"type": "Anime", "option": "-crf 23"},
+                    {"type": "Nature", "option": "-crf 23"},
                 ],
+                "options": [""],
             },
             "hwaccels": "",
         },
@@ -60,9 +64,11 @@ def _get_default_patterns() -> list[dict[str, Any]]:
             "presets": ["6"],
             "infile": {"option": ""},
             "outfile": {
-                "options": [
-                    "-crf 31",
+                "base": [
+                    {"type": "Anime", "option": "-crf 31"},
+                    {"type": "Nature", "option": "-crf 31"},
                 ],
+                "options": [""],
             },
             "hwaccels": "",
         },
@@ -73,9 +79,11 @@ def _get_default_patterns() -> list[dict[str, Any]]:
             "presets": ["veryslow"],
             "infile": {"option": "-hwaccel qsv -c:v mpeg2_qsv"},
             "outfile": {
-                "options": [
-                    "-q:v 22 -bf 15 -refs 8",
+                "base": [
+                    {"type": "Anime", "option": "-q:v 22"},
+                    {"type": "Nature", "option": "-q:v 22"},
                 ],
+                "options": ["-bf 15 -refs 8"],
             },
             "hwaccels": "-hwaccel_output_format qsv",
         },
@@ -86,9 +94,11 @@ def _get_default_patterns() -> list[dict[str, Any]]:
             "presets": ["veryslow"],
             "infile": {"option": "-hwaccel qsv -c:v mpeg2_qsv"},
             "outfile": {
-                "options": [
-                    "-global_quality 25 -bf 15 -refs 8",
+                "base": [
+                    {"type": "Anime", "option": "-global_quality 29"},
+                    {"type": "Nature", "option": "-global_quality 25"},
                 ],
+                "options": ["-bf 15 -refs 8"],
             },
             "hwaccels": "-hwaccel_output_format qsv",
         },
@@ -99,9 +109,11 @@ def _get_default_patterns() -> list[dict[str, Any]]:
             "presets": ["veryslow"],
             "infile": {"option": "-hwaccel qsv -c:v mpeg2_qsv"},
             "outfile": {
-                "options": [
-                    "-global_quality 25 -look_ahead 1 -bf 15 -refs 8",
+                "base": [
+                    {"type": "Anime", "option": "-global_quality 25 -look_ahead 1"},
+                    {"type": "Nature", "option": "-global_quality 25 -look_ahead 1"},
                 ],
+                "options": ["-bf 15 -refs 8"],
             },
             "hwaccels": "-hwaccel_output_format qsv",
         },
@@ -112,9 +124,11 @@ def _get_default_patterns() -> list[dict[str, Any]]:
             "presets": ["veryslow"],
             "infile": {"option": "-hwaccel qsv -c:v mpeg2_qsv"},
             "outfile": {
-                "options": [
-                    "-q:v 20 -bf 15 -refs 8 -vf vpp_qsv=format=p010le",
+                "base": [
+                    {"type": "Anime", "option": "-q:v 20"},
+                    {"type": "Nature", "option": "-q:v 20"},
                 ],
+                "options": ["-bf 15 -refs 8 -vf vpp_qsv=format=p010le"],
             },
             "hwaccels": "-hwaccel_output_format qsv",
         },
@@ -125,9 +139,11 @@ def _get_default_patterns() -> list[dict[str, Any]]:
             "presets": ["veryslow"],
             "infile": {"option": "-hwaccel qsv -c:v mpeg2_qsv"},
             "outfile": {
-                "options": [
-                    "-global_quality 21 -bf 15 -refs 8 -vf vpp_qsv=format=p010le",
+                "base": [
+                    {"type": "Anime", "option": "-global_quality 21"},
+                    {"type": "Nature", "option": "-global_quality 21"},
                 ],
+                "options": ["-bf 15 -refs 8 -vf vpp_qsv=format=p010le"],
             },
             "hwaccels": "-hwaccel_output_format qsv",
         },
@@ -138,9 +154,11 @@ def _get_default_patterns() -> list[dict[str, Any]]:
             "presets": ["veryslow"],
             "infile": {"option": "-hwaccel qsv -c:v mpeg2_qsv"},
             "outfile": {
-                "options": [
-                    "-q:v 53 -vf vpp_qsv=format=p010le",
+                "base": [
+                    {"type": "Anime", "option": "-q:v 53"},
+                    {"type": "Nature", "option": "-q:v 53"},
                 ],
+                "options": ["-vf vpp_qsv=format=p010le"],
             },
             "hwaccels": "-hwaccel_output_format qsv",
         },
@@ -151,9 +169,11 @@ def _get_default_patterns() -> list[dict[str, Any]]:
             "presets": ["veryslow"],
             "infile": {"option": "-hwaccel qsv -c:v mpeg2_qsv"},
             "outfile": {
-                "options": [
-                    "-global_quality 24 -vf vpp_qsv=format=p010le",
+                "base": [
+                    {"type": "Anime", "option": "-global_quality 24"},
+                    {"type": "Nature", "option": "-global_quality 24"},
                 ],
+                "options": ["-vf vpp_qsv=format=p010le"],
             },
             "hwaccels": "-hwaccel_output_format qsv",
         },
@@ -391,6 +411,10 @@ def _validate_config(configs: dict[str, Any], patterns: list[dict[str, Any]]) ->
     ):
         configs["configs"]["references"] = []
 
+    # references が空の場合はデフォルトを使用
+    if not configs["configs"]["references"]:
+        configs["configs"]["references"] = _get_default_references()
+
     return configs
 
 
@@ -616,6 +640,7 @@ class ResultTemplateParams:
         self,
         pattern: dict[str, Any],
         preset: str,
+        base_option: str,
         out_option: str,
         ref: dict[str, Any],
         args: object,
@@ -626,13 +651,15 @@ class ResultTemplateParams:
         Args:
             pattern: Encoding pattern.
             preset: Preset to use.
-            out_option: Output option.
+            base_option: Base option selected by reference type.
+            out_option: Output option for exploration.
             ref: Reference file.
             args: Command line arguments.
             distdir: Output directory.
         """
         self.pattern = pattern
         self.preset = preset
+        self.base_option = base_option
         self.out_option = out_option
         self.ref = ref
         self.args = args
@@ -656,10 +683,13 @@ def _create_result_template(params: ResultTemplateParams) -> dict[str, Any]:
     infile_opts: str = params.pattern["infile"]["option"]
     hwaccels: str = params.pattern["hwaccels"]
 
+    # Combine base_option and out_option to create encode_options
+    encode_options: str = f"{params.base_option} {params.out_option}".strip()
+
     out_option_hash: str = hashlib.sha256(
         str(
             [
-                f"{codec}{type_}{params.preset}{params.out_option}",
+                f"{codec}{type_}{params.preset}{encode_options}",
                 f"{threads}{hwaccels}{infile_opts}",
             ],
         ).encode(),
@@ -687,7 +717,9 @@ def _create_result_template(params: ResultTemplateParams) -> dict[str, Any]:
         },
         "outfile": {
             "filename": f"{params.distdir}/{out_id_hash[:12]}",
+            "base": params.base_option,
             "options": params.out_option,
+            "encode_options": encode_options,
             "hash": "",
             "bit_rate_kbs": 0.0,
             "duration": 0.0,
@@ -765,11 +797,35 @@ def _generate_encoding_configs(
                 msg = f"outfile.options is must list[str] : {pattern['outfile']['options']}"
                 raise VQEError(msg)
 
+            # Validate that base exists and is a list
+            if "base" not in pattern["outfile"]:
+                msg = f"outfile.base is required in pattern: {pattern['codec']}"
+                raise VQEError(msg)
+            if not isinstance(pattern["outfile"]["base"], list):
+                msg = f"outfile.base must be list[dict]: {pattern['outfile']['base']}"
+                raise VQEError(msg)
+
             for out_option in pattern["outfile"]["options"]:
                 for ref in configs["configs"]["references"]:
+                    # Find the base option matching the reference type
+                    base_option = None
+                    for base in pattern["outfile"]["base"]:
+                        if base["type"] == ref["type"]:
+                            base_option = base["option"]
+                            break
+
+                    if base_option is None:
+                        msg = (
+                            f"No base option found for reference type '{ref['type']}' "
+                            f"in pattern {pattern['codec']}. "
+                            f"Available types: {[b['type'] for b in pattern['outfile']['base']]}"
+                        )
+                        raise VQEError(msg)
+
                     params = ResultTemplateParams(
                         pattern=pattern,
                         preset=preset,
+                        base_option=base_option,
                         out_option=out_option,
                         ref=ref,
                         args=args,
@@ -786,6 +842,7 @@ def _generate_encoding_configs(
                             f"preset: {result_template['preset']:10}",
                             f"codec: {result_template['codec']:12}",
                             f"type: {result_template['type']:24}",
+                            f"base: {result_template['outfile']['base']}",
                             f"options: {result_template['outfile']['options']}",
                         )
 

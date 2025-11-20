@@ -42,6 +42,7 @@ CODEC_DEFAULTS = {
         "FI": 23.0,
         "FP": 3573.0,
         "FB": 0.0,
+        "outfile_base": "",
         "outfile_options": "-crf 35(default 2.3.0)",
     },
     "libx264_crf": {
@@ -63,6 +64,7 @@ CODEC_DEFAULTS = {
         "FI": 39.0,
         "FP": 2617.0,
         "FB": 1648.0,
+        "outfile_base": "",
         "outfile_options": "-crf 23(default b35605ac)",
     },
     "libx265_crf": {
@@ -84,19 +86,42 @@ CODEC_DEFAULTS = {
         "FI": 25.0,
         "FP": 2046.0,
         "FB": 2432.0,
+        "outfile_base": "",
         "outfile_options": "-crf 28(default 4.0)",
     },
-    "h264_qsv_cqp": {
+    "h264_qsv_cqp": {  # h264_qsv_cqp (score: 68.770, rows aggregated: 6)
         "codec": "h264_qsv",
         "type": "CQP",
         "preset": "veryslow",
-        "outfile_size_kbyte": 49721.69775390625,
-        "outfile_bit_rate_kbs": 3315.1661783854165,
-        "enc_sec": 11.65939450263977,
-        "outfile_size_percent": 0.22155824481239103,
-        "ssim_mean": 0.99267,
-        "vmaf_min": 67.94664,
-        "vmaf_mean": 94.197446,
+        "outfile_size_kbyte": 83837.9708658854,
+        "outfile_bit_rate_kbs": 5589.8497721354,
+        "enc_sec": 11.4286951621,
+        "outfile_size_percent": 0.3402962721,
+        "ssim_mean": 0.9958746667,
+        "vmaf_min": 81.7303305,
+        "vmaf_mean": 93.9021446667,
+        "gop_min": 256,
+        "gop_avg": 256.0,
+        "gop_max": 256,
+        "bf": 3.0,
+        "refs": 3.0,
+        "FI": 15.0,
+        "FP": 899.0,
+        "FB": 2682.0,
+        "outfile_base": "",
+        "outfile_options": "A: -q:v 26 / N: -q:v 22",
+    },
+    "h264_qsv_icq": {
+        "codec": "h264_qsv",
+        "type": "ICQ",
+        "preset": "veryslow",
+        "outfile_size_kbyte": 57326.840,
+        "outfile_bit_rate_kbs": 3822.235,
+        "enc_sec": 11.934,
+        "outfile_size_percent": 0.214,
+        "ssim_mean": 0.993,
+        "vmaf_min": 76.487,
+        "vmaf_mean": 93.807,
         "gop_min": 256.0,
         "gop_avg": 256.0,
         "gop_max": 256.0,
@@ -105,27 +130,7 @@ CODEC_DEFAULTS = {
         "FI": 15.0,
         "FP": 899.0,
         "FB": 2682.0,
-        "outfile_options": "-q:v 27 (base)",
-    },
-    "h264_qsv_icq": {
-        "codec": "h264_qsv",
-        "type": "ICQ",
-        "preset": "veryslow",
-        "outfile_size_kbyte": 55614.1943359375,
-        "outfile_bit_rate_kbs": 3708.0450846354165,
-        "enc_sec": 11.561723550160727,
-        "outfile_size_percent": 0.22308368651201305,
-        "ssim_mean": 0.9936656666666668,
-        "vmaf_min": 77.082578,
-        "vmaf_mean": 91.03732016666669,
-        "gop_min": 256.0,
-        "gop_avg": 256.0,
-        "gop_max": 256.0,
-        "bf": 3.0,
-        "refs": 3.0,
-        "FI": 899.0,
-        "FP": 2682.0,
-        "FB": 3596.0,
+        "outfile_base": "",
         "outfile_options": "-global_quality 29 (default)",
     },
     "_t_crf": {
@@ -147,6 +152,7 @@ CODEC_DEFAULTS = {
         "FI": 0.0,
         "FP": 0.0,
         "FB": 0.0,
+        "outfile_base": "",
         "outfile_options": "(default)",
     },
 }
@@ -189,9 +195,9 @@ def insert_codec_defaults() -> None:
                         codec, type, preset, gop, max_consecutive_bframes, refs,
                         ref_type, outfile_size_kbyte, outfile_bit_rate_kbs, enc_sec,
                         outfile_size_percent, ssim_mean, vmaf_min, vmaf_mean,
-                        fI, fP, fB, outfile_options
+                        fI, fP, fB, outfile_base, outfile_options
                     )
-                    VALUES (?, ?, ?, ?, ?, ?, 'default', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    VALUES (?, ?, ?, ?, ?, ?, 'default', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """,
                 [
                     defaults["codec"],
@@ -210,6 +216,7 @@ def insert_codec_defaults() -> None:
                     defaults["FI"],
                     defaults["FP"],
                     defaults["FB"],
+                    defaults["outfile_base"],
                     defaults["outfile_options"],
                 ],
             )
@@ -262,6 +269,7 @@ def generate_grouped_csvs(csvfile_type: str, csvfile_option: str) -> None:
             ref_type,
             AVG(outfile_size_kbyte)                 AS outfile_size_kbyte,
             AVG(outfile_bit_rate_kbs)               AS outfile_bit_rate_kbs,
+            outfile_base,
             outfile_options,
             AVG(enc_sec)                            AS enc_sec,
             AVG(outfile_size_percent)               AS outfile_size_percent,
@@ -273,7 +281,7 @@ def generate_grouped_csvs(csvfile_type: str, csvfile_option: str) -> None:
             AVG(vmaf_mean)                          AS vmaf_mean,
             AVG(score)                              AS score
         FROM scored_data
-        GROUP BY codec, type, preset, threads, ref_type, outfile_options
+        GROUP BY codec, type, preset, threads, ref_type, outfile_base, outfile_options
         """,
     ).write_csv(csvfile_type)
     logger.info("[CSV] Generated %s", csvfile_type)
@@ -310,6 +318,7 @@ def generate_grouped_csvs(csvfile_type: str, csvfile_option: str) -> None:
             MAX(fT)                                 AS fT,
             AVG(outfile_size_kbyte)                 AS outfile_size_kbyte,
             AVG(outfile_bit_rate_kbs)               AS outfile_bit_rate_kbs,
+            outfile_base,
             outfile_options,
             AVG(enc_sec)                            AS enc_sec,
             AVG(outfile_size_percent)               AS outfile_size_percent,
@@ -321,7 +330,7 @@ def generate_grouped_csvs(csvfile_type: str, csvfile_option: str) -> None:
             AVG(vmaf_mean)                          AS vmaf_mean,
             AVG(score)                              AS score
         FROM scored_data
-        GROUP BY codec, type, preset, threads, outfile_options
+        GROUP BY codec, type, preset, threads, outfile_base, outfile_options
         """,
     ).write_csv(csvfile_option)
     logger.info("[CSV] Generated %s", csvfile_option)
@@ -407,9 +416,10 @@ def show_aggregated_results() -> None:
                 printf('%+7.3f', ROUND(AVG(score), 3) - (SELECT default_score FROM default_values d WHERE d.codec = scored_data.codec LIMIT 1)),
                 ')'
             ) AS score,
+            outfile_base,
             outfile_options
         FROM scored_data
-        GROUP BY codec, ref_type, preset, outfile_options
+        GROUP BY codec, ref_type, preset, outfile_base, outfile_options
         ORDER BY AVG(score) DESC
         LIMIT 5
     """,
@@ -468,9 +478,10 @@ def show_aggregated_results() -> None:
                 printf('%+7.3f', ROUND(AVG(score), 3) - (SELECT default_score FROM default_values d WHERE d.codec = scored_data.codec LIMIT 1)),
                 ')'
             ) AS score,
+            outfile_base,
             outfile_options
         FROM scored_data
-        GROUP BY codec, ref_type, preset, outfile_options
+        GROUP BY codec, ref_type, preset, outfile_base, outfile_options
         ORDER BY AVG(score) DESC
         LIMIT 5
     """,
@@ -491,7 +502,7 @@ def show_aggregated_results() -> None:
                 f"CAST({defaults['gop_min']} AS DOUBLE), CAST({defaults['gop_avg']} AS DOUBLE), CAST({defaults['gop_max']} AS DOUBLE), "
                 f"CAST({defaults['bf']} AS DOUBLE), CAST({defaults['refs']} AS DOUBLE), "
                 f"CAST({float(defaults['FI'])} AS DOUBLE), CAST({float(defaults['FP'])} AS DOUBLE), CAST({float(defaults['FB'])} AS DOUBLE), "  # type: ignore[arg-type]
-                f"'{defaults['outfile_options']}')",
+                f"'{defaults['outfile_base']}', '{defaults['outfile_options']}')",
             )
 
     if not default_full_values_list:
@@ -506,7 +517,7 @@ def show_aggregated_results() -> None:
             SELECT * FROM (VALUES {default_full_values_sql})
             AS t(codec, type, preset, outfile_size_kbyte, outfile_bit_rate_kbs,
                  enc_sec, outfile_size_percent, ssim_mean, vmaf_min, vmaf_mean,
-                 gop_min, gop_avg, gop_max, bf, refs, fI, fP, fB, outfile_options)
+                 gop_min, gop_avg, gop_max, bf, refs, fI, fP, fB, outfile_base, outfile_options)
         ),
         default_values AS (
             SELECT
@@ -529,6 +540,7 @@ def show_aggregated_results() -> None:
                 gop_min, gop_avg, gop_max,
                 bf, refs,
                 CONCAT(printf('%.1f', fI), ' / ', printf('%.1f', fP), ' / ', printf('%.1f', fB)) AS "I/P/B frames",
+                outfile_base,
                 outfile_options,
                 0 AS sort_order
             FROM default_values_raw
@@ -573,10 +585,11 @@ def show_aggregated_results() -> None:
                 CONCAT(ROUND(AVG(fI), 3), ' / ',
                     ROUND(AVG(fP), 3), ' / ',
                     ROUND(AVG(fB), 3))                   AS "I/P/B frames",
+                outfile_base,
                 outfile_options,
                 1 AS sort_order
             FROM scored_encodes
-            GROUP BY codec, type, preset, outfile_options
+            GROUP BY codec, type, preset, outfile_base, outfile_options
         ),
         combined AS (
             SELECT * FROM default_values
@@ -605,11 +618,154 @@ def show_aggregated_results() -> None:
             CONCAT(printf('%.1f', CAST(gop_min AS DOUBLE)), ' / ', printf('%.1f', CAST(gop_avg AS DOUBLE)), ' / ', printf('%.1f', CAST(gop_max AS DOUBLE))) AS "min/avg/max GOP",
             printf('%.1f', bf) AS bf,
             printf('%.1f', refs) AS refs,
-            "I/P/B frames", outfile_options
+            "I/P/B frames", outfile_base, outfile_options
         FROM combined
         ORDER BY codec, sort_order, COALESCE(score, 0) DESC
         """,
     ).show()
+
+
+def generate_codec_defaults_from_bases(base_options: str) -> None:
+    """Generate CODEC_DEFAULTS dict from selected base options.
+
+    Args:
+        base_options: Comma-separated base options (e.g., "-q:v 26,-q:v 22")
+                     First value for Anime, second value for Nature
+    """
+    expected_option_count = 2
+    options = [opt.strip() for opt in base_options.split(",")]
+    if len(options) != expected_option_count:
+        logger.error(
+            "Error: --select-base requires exactly 2 comma-separated values (Anime,Nature)",
+        )
+        return
+
+    anime_base, nature_base = options[0], options[1]
+    logger.info("[CODEC_DEFAULTS] Anime base : %s", anime_base)
+    logger.info("[CODEC_DEFAULTS] Nature base: %s", nature_base)
+
+    # Query to aggregate selected base executions
+    result = duckdb.execute(
+        """
+        WITH filtered_data AS (
+            -- Anime data (3 rows)
+            SELECT * FROM encodes
+            WHERE ref_type = 'Anime'
+              AND outfile_base IS NULL
+              AND outfile_options = ?
+            UNION ALL
+            -- Nature data (3 rows)
+            SELECT * FROM encodes
+            WHERE ref_type = 'Nature'
+              AND outfile_base IS NULL
+              AND outfile_options = ?
+        ),
+        scored_data AS (
+            SELECT
+                *,
+                (1 - outfile_size_percent) * 85 +
+                CASE
+                    WHEN vmaf_mean >= 93.0 AND vmaf_mean < 94.0 THEN 10 - ABS(vmaf_mean - 93.5) * 2
+                    WHEN vmaf_mean < 93.0 THEN GREATEST(0, 10 - (93.0 - vmaf_mean) * 2)
+                    ELSE GREATEST(0, 10 - (vmaf_mean - 94.0) * 2)
+                END +
+                (vmaf_min / 100) * 5 AS score
+            FROM filtered_data
+        )
+        SELECT
+            codec,
+            type,
+            preset,
+            ROUND(AVG(outfile_size_kbyte), 10) AS outfile_size_kbyte,
+            ROUND(AVG(outfile_bit_rate_kbs), 10) AS outfile_bit_rate_kbs,
+            ROUND(AVG(enc_sec), 10) AS enc_sec,
+            ROUND(AVG(outfile_size_percent), 10) AS outfile_size_percent,
+            ROUND(AVG(ssim_mean), 10) AS ssim_mean,
+            ROUND(AVG(vmaf_min), 10) AS vmaf_min,
+            ROUND(AVG(vmaf_mean), 10) AS vmaf_mean,
+            ROUND(MIN(gop), 1) AS gop_min,
+            ROUND(AVG(gop), 3) AS gop_avg,
+            ROUND(MAX(gop), 1) AS gop_max,
+            ROUND(AVG(max_consecutive_bframes), 1) AS bf,
+            ROUND(AVG(refs), 1) AS refs,
+            ROUND(AVG(fI), 1) AS fI,
+            ROUND(AVG(fP), 1) AS fP,
+            ROUND(AVG(fB), 1) AS fB,
+            ROUND(AVG(score), 3) AS score,
+            COUNT(*) AS row_count
+        FROM scored_data
+        GROUP BY codec, type, preset
+        """,
+        [anime_base, nature_base],
+    ).fetchall()
+
+    if not result:
+        logger.error("Error: No data found for the specified base options")
+        return
+
+    # Output CODEC_DEFAULTS format
+    separator = "=" * 80
+    logger.info("\n%s", separator)
+    logger.info("CODEC_DEFAULTS Update Data")
+    logger.info("%s", separator)
+
+    for row in result:
+        (
+            codec,
+            type_,
+            preset,
+            outfile_size_kbyte,
+            outfile_bit_rate_kbs,
+            enc_sec,
+            outfile_size_percent,
+            ssim_mean,
+            vmaf_min,
+            vmaf_mean,
+            gop_min,
+            gop_avg,
+            gop_max,
+            bf,
+            refs,
+            fi,
+            fp,
+            fb,
+            score,
+            row_count,
+        ) = row
+
+        dict_key = f"{codec}_{type_.lower()}"
+
+        logger.info(
+            '"%s": {  # %s (score: %.3f, rows aggregated: %d)',
+            dict_key,
+            dict_key,
+            score,
+            row_count,
+        )
+        logger.info('    "codec": "%s",', codec)
+        logger.info('    "type": "%s",', type_)
+        logger.info('    "preset": "%s",', preset)
+        logger.info('    "outfile_size_kbyte": %s,', outfile_size_kbyte)
+        logger.info('    "outfile_bit_rate_kbs": %s,', outfile_bit_rate_kbs)
+        logger.info('    "enc_sec": %s,', enc_sec)
+        logger.info('    "outfile_size_percent": %s,', outfile_size_percent)
+        logger.info('    "ssim_mean": %s,', ssim_mean)
+        logger.info('    "vmaf_min": %s,', vmaf_min)
+        logger.info('    "vmaf_mean": %s,', vmaf_mean)
+        logger.info('    "gop_min": %s,', gop_min)
+        logger.info('    "gop_avg": %s,', gop_avg)
+        logger.info('    "gop_max": %s,', gop_max)
+        logger.info('    "bf": %s,', bf)
+        logger.info('    "refs": %s,', refs)
+        logger.info('    "FI": %s,', fi)
+        logger.info('    "FP": %s,', fp)
+        logger.info('    "FB": %s,', fb)
+        logger.info('    "outfile_base": "",')
+        logger.info('    "outfile_options": "A: %s / N: %s",', anime_base, nature_base)
+        logger.info("},")
+
+    separator = "=" * 80
+    logger.info("\n%s", separator)
 
 
 def main(config_path: str, args: object) -> None:
@@ -623,3 +779,7 @@ def main(config_path: str, args: object) -> None:
     generate_grouped_csvs(csvfile_type, csvfile_option)
     insert_codec_defaults()
     show_aggregated_results()
+
+    # Handle --select-base if provided
+    if hasattr(args, "select_base") and args.select_base:
+        generate_codec_defaults_from_bases(args.select_base)

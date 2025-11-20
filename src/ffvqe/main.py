@@ -107,6 +107,12 @@ def create_argument_parser() -> argparse.ArgumentParser:
         help="Automatically download reference files without prompting. (default: False)",
         action="store_true",
     )
+    parser.add_argument(
+        "--select-base",
+        help='Select base options for CODEC_DEFAULTS generation (e.g., "-q:v 26,-q:v 22" for Anime,Nature)',
+        type=str,
+        default=None,
+    )
 
     return parser
 
