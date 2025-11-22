@@ -80,7 +80,7 @@ def _get_default_patterns() -> list[dict[str, Any]]:
             "infile": {"option": "-hwaccel qsv -c:v mpeg2_qsv"},
             "outfile": {
                 "base": [
-                    {"type": "Anime", "option": "-q:v 22"},
+                    {"type": "Anime", "option": "-q:v 26"},
                     {"type": "Nature", "option": "-q:v 22"},
                 ],
                 "options": ["-bf 15 -refs 8"],
@@ -96,7 +96,7 @@ def _get_default_patterns() -> list[dict[str, Any]]:
             "outfile": {
                 "base": [
                     {"type": "Anime", "option": "-global_quality 29"},
-                    {"type": "Nature", "option": "-global_quality 25"},
+                    {"type": "Nature", "option": "-global_quality 26"},
                 ],
                 "options": ["-bf 15 -refs 8"],
             },
