@@ -590,6 +590,7 @@ def show_aggregated_results() -> None:
                 1 AS sort_order
             FROM scored_encodes
             GROUP BY codec, type, preset, outfile_options
+            HAVING COUNT(DISTINCT ref_type) >= 2
         ),
         combined AS (
             SELECT * FROM default_values
