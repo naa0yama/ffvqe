@@ -125,8 +125,8 @@ def _get_default_patterns() -> list[dict[str, Any]]:
             "infile": {"option": "-hwaccel qsv -c:v mpeg2_qsv"},
             "outfile": {
                 "base": [
-                    {"type": "Anime", "option": "-q:v 20"},
-                    {"type": "Nature", "option": "-q:v 20"},
+                    {"type": "Anime", "option": "-q:v 25"},
+                    {"type": "Nature", "option": "-q:v 21"},
                 ],
                 "options": ["-bf 15 -refs 8 -vf vpp_qsv=format=p010le"],
             },

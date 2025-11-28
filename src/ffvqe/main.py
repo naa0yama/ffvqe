@@ -154,7 +154,7 @@ def main_encode(config: dict[str, Any], args: argparse.Namespace) -> None:
             try:
                 __encode_rep = encoding(
                     encode_cfg=__encode,
-                    probe_timeout=int(float(__base_probe_log["format"]["duration"]) * 1.2),
+                    probe_timeout=int(float(__base_probe_log["format"]["duration"]) * 2.0),
                     ffmpeg_threads=args.ffmpeg_threads,
                 )
                 __vmaf_rsp = getvmaf(encode_cfg=__encode, tvflag=args.encode_tv)
