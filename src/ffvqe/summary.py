@@ -23,27 +23,27 @@ logger.addHandler(handler)
 
 # Codec default values
 CODEC_DEFAULTS = {
-    "libsvtav1_crf": {
+    "libsvtav1_crf": {  # libsvtav1_crf (score: 81.573, rows aggregated: 6)
         "codec": "libsvtav1",
         "type": "CRF",
         "preset": "6",
-        "outfile_size_kbyte": 46329.668619791664,
-        "outfile_bit_rate_kbs": 3089.0047200520835,
-        "enc_sec": 184.39687065283456,
-        "outfile_size_percent": 0.1853507712385174,
-        "ssim_mean": 0.9960268333333334,
-        "vmaf_min": 81.40379733333333,
-        "vmaf_mean": 93.419376,
-        "gop_min": 161.0,
+        "outfile_size_kbyte": 47650.0963541667,
+        "outfile_bit_rate_kbs": 3177.0432942708,
+        "enc_sec": 194.3044428031,
+        "outfile_size_percent": 0.1913428069,
+        "ssim_mean": 0.9959423333,
+        "vmaf_min": 81.4382878333,
+        "vmaf_mean": 93.3403821667,
+        "gop_min": 161,
         "gop_avg": 161.0,
-        "gop_max": 161.0,
+        "gop_max": 161,
         "bf": 0.0,
         "refs": 1.0,
         "FI": 23.0,
         "FP": 3573.0,
         "FB": 0.0,
         "outfile_base": "",
-        "outfile_options": "-crf 35(default 2.3.0)",
+        "outfile_options": "A: -crf 40 / N: -crf 32",
     },
     "libx264_crf": {  # libx264_crf (score: 72.828, rows aggregated: 6)
         "codec": "libx264",
