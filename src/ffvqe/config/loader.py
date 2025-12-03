@@ -65,8 +65,8 @@ def _get_default_patterns() -> list[dict[str, Any]]:
             "infile": {"option": ""},
             "outfile": {
                 "base": [
-                    {"type": "Anime", "option": "-crf 31"},
-                    {"type": "Nature", "option": "-crf 31"},
+                    {"type": "Anime", "option": "-crf 43"},
+                    {"type": "Nature", "option": "-crf 32"},
                 ],
                 "options": [""],
             },
