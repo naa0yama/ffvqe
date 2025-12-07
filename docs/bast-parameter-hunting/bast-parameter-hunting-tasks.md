@@ -16,8 +16,8 @@
 **従来型の3フレーム構造**:
 
 - **I-Frame (Intra)**: キーフレーム、単独で復号可能
-- **P-Frame (Predicted)**: 前方参照のみ（過去のフレームから予測）
-- **B-Frame (Bi-directional)**: 前後両方向から参照（過去と未来のフレームから予測）
+- **P-Frame (Predicted)**: 前方参照のみ(過去のフレームから予測)
+- **B-Frame (Bi-directional)**: 前後両方向から参照(過去と未来のフレームから予測)
 
 ```text
 I --- P --- B --- B --- P --- B --- B --- I
@@ -58,8 +58,8 @@ I --- B --- B --- B --- B --- B --- B --- B --- I
 
 AV1 は従来の I/P/B フレームとは全く異なる設計：
 
-1. **Key Frame**: 独立して復号可能（I-Frame に相当）
-2. **Inter Frame**: 他のフレームを参照（P/B に相当するが異なる）
+1. **Key Frame**: 独立して復号可能(I-Frame に相当)
+2. **Inter Frame**: 他のフレームを参照(P/B に相当するが異なる)
 3. **Altref (Alternative Reference) フレーム**: 未来のフレームを事前エンコードして参照に使用
 
 ```text
@@ -69,8 +69,8 @@ K --- [Altref hidden] --- Inter --- Inter --- Inter --- K
 ```
 
 - **既存データ例**: `I/P/B: 23.0 / 3573.5 / 0.0` (av1_qsv)
-- **B-Frame が 0**: これは**正常**（AV1 には B-Frame が存在しない）
-- **`-bf` オプション**: **AV1 では無効**（指定しても無視される）
+- **B-Frame が 0**: これは**正常**(AV1 には B-Frame が存在しない)
+- **`-bf` オプション**: **AV1 では無効**(指定しても無視される)
 - **Altref フレーム**: エンコーダーが自動的に最適な構造を決定
 
 ### コーデック別対応表
@@ -79,7 +79,7 @@ K --- [Altref hidden] --- Inter --- Inter --- Inter --- K
 | :----------- | :-----: | :-------: | :-----: | :----------- | :---------------------------- | :---------------------- |
 | **H.264**    |    ✓    |     ✓     |    ✓    | -            | P間のBフレーム最大数          | 参照フレーム数          |
 | **HEVC**     |    ✓    |     ✓     |    ✓    | GPB          | P間のBフレーム最大数          | 参照フレーム数          |
-| **AV1**      | ✓ (Key) | ✓ (Inter) |    ✗    | Altref       | **無効**                      | 参照フレーム数（最大7） |
+| **AV1**      | ✓ (Key) | ✓ (Inter) |    ✗    | Altref       | **無効**                      | 参照フレーム数(最大7) |
 | **h264_qsv** |    ✓    |     ✓     |    ✓    | -            | P間のBフレーム最大数 (最大16) | 参照フレーム数 (最大16) |
 | **hevc_qsv** |    ✓    |     △     |    ✓    | GPB          | Bフレーム制御 (最大15)        | 参照フレーム数          |
 | **av1_qsv**  | ✓ (Key) | ✓ (Inter) |    ✗    | Altref       | **無効**                      | 参照フレーム数 (最大7)  |
@@ -99,21 +99,21 @@ K --- [Altref hidden] --- Inter --- Inter --- Inter --- K
 | パラメーター | デフォルト | 最小値 | 最大値 |    推奨範囲     | 説明                                                                              |
 | :----------- | :--------: | :----: | :----: | :-------------: | :-------------------------------------------------------------------------------- |
 | **-crf**     |     23     |   0    |   51   |      18-28      | 品質パラメーター。低いほど高品質・大容量。±6で約2倍/半分のビットレート            |
-| **-g**       |    250     |   1    |   -    |     120-300     | GOP サイズ（キーフレーム間隔）。30fps で 250 = 約8.3秒                            |
+| **-g**       |    250     |   1    |   -    |     120-300     | GOP サイズ(キーフレーム間隔)。30fps で 250 = 約8.3秒                            |
 | **-bf**      |     3      |   0    |   16   |      2-15       | 連続B-Frameの最大数。多いほど圧縮率向上、処理時間増                               |
 | **-refs**    |     3      |   1    |   16   |      4-15       | 参照フレーム数。多いほど画質向上、処理時間増。5以上で効果微減                     |
-| **-preset**  |   medium   |   -    |   -    | medium-veryslow | エンコード速度プリセット（ultrafast/veryfast/faster/medium/slow/slower/veryslow） |
+| **-preset**  |   medium   |   -    |   -    | medium-veryslow | エンコード速度プリセット(ultrafast/veryfast/faster/medium/slow/slower/veryslow) |
 
 **x264-params 高度なパラメーター:**
 
 | パラメーター     | デフォルト |  範囲   | 説明                                                 |
 | :--------------- | :--------: | :-----: | :--------------------------------------------------- |
 | **trellis**      |     1      |   0-2   | トレリス量子化。2で最高品質、処理時間増              |
-| **aq-mode**      |     1      |   0-3   | 適応的量子化モード。2が推奨（分散ベース）            |
+| **aq-mode**      |     1      |   0-3   | 適応的量子化モード。2が推奨(分散ベース)            |
 | **aq-strength**  |    1.0     | 0.0-3.0 | 適応的量子化強度。1.0-1.2が推奨                      |
 | **rc-lookahead** |     40     |  0-250  | レート制御先読みフレーム数。多いほどビット配分最適化 |
-| **me**           |    hex     |    -    | 動き推定アルゴリズム（dia/hex/umh/esa/tesa）         |
-| **psy-rd**       |  1.0,0.0   | 0.0-2.0 | 心理視覚最適化（RD,RDOQ）                            |
+| **me**           |    hex     |    -    | 動き推定アルゴリズム(dia/hex/umh/esa/tesa)         |
+| **psy-rd**       |  1.0,0.0   | 0.0-2.0 | 心理視覚最適化(RD,RDOQ)                            |
 
 ### Phase 1: CRF値探査(libx264-0001-crf)
 
@@ -216,7 +216,7 @@ outfile:
     - -g [最適値] -bf [最適値] -refs [最適値] -x264-params aq-mode=2:aq-strength=0.8
     - -g [最適値] -bf [最適値] -refs [最適値] -x264-params aq-mode=2:aq-strength=1.2
 
-    # 心理視覚最適化（psy-rdは2つの値をカンマで区切る）
+    # 心理視覚最適化(psy-rdは2つの値をカンマで区切る)
     - -g [最適値] -bf [最適値] -refs [最適値] -x264-params psy-rd=0.8,0.0
     - -g [最適値] -bf [最適値] -refs [最適値] -x264-params psy-rd=1.0,0.0
     - -g [最適値] -bf [最適値] -refs [最適値] -x264-params psy-rd=1.2,0.0
@@ -234,7 +234,7 @@ outfile:
     # トレリス量子化
     - -g [最適値] -bf [最適値] -refs [最適値] -x264-params trellis=2
 
-    # 複合最適化（複数パラメータはコロンで区切り、psy-rdの値内はカンマ）
+    # 複合最適化(複数パラメータはコロンで区切り、psy-rdの値内はカンマ)
     - -g [最適値] -bf [最適値] -refs [最適値] -x264-params aq-mode=2:aq-strength=1.0:psy-rd=1.0,0.15:rc-lookahead=60
 ```
 
@@ -251,7 +251,7 @@ outfile:
 
 ### 基本情報(libx265-basic-info)
 
-- **フレーム構造**: 従来の I/P/B 構造を使用（H.264 より高度）
+- **フレーム構造**: 従来の I/P/B 構造を使用(H.264 より高度)
 - **既存ベスト**: `-crf 27 (Anime)`, `-crf 23 (Nature)`
 
 ### パラメーター詳細(libx265-parameter-details)
@@ -259,16 +259,16 @@ outfile:
 | パラメーター | デフォルト | 最小値 | 最大値 |    推奨範囲     | 説明                                                                              |
 | :----------- | :--------: | :----: | :----: | :-------------: | :-------------------------------------------------------------------------------- |
 | **-crf**     |     28     |   0    |   51   |      20-32      | 品質パラメーター。x264より約+4が同等品質。±6で約2倍/半分のビットレート            |
-| **-g**       |    250     |   1    |   -    |     120-300     | GOP サイズ（キーフレーム間隔）。30fps で 250 = 約8.3秒                            |
+| **-g**       |    250     |   1    |   -    |     120-300     | GOP サイズ(キーフレーム間隔)。30fps で 250 = 約8.3秒                            |
 | **-bf**      |     4      |   0    |   16   |      2-12       | 連続B-Frameの最大数。多いほど圧縮率向上、処理時間増                               |
 | **-refs**    |     1      |   1    |   16   |       1-6       | 参照フレーム数。**HEVC仕様制限: B-pyramid有効時は最大6**                          |
-| **-preset**  |   medium   |   -    |   -    | medium-veryslow | エンコード速度プリセット（ultrafast/veryfast/faster/medium/slow/slower/veryslow） |
+| **-preset**  |   medium   |   -    |   -    | medium-veryslow | エンコード速度プリセット(ultrafast/veryfast/faster/medium/slow/slower/veryslow) |
 
 **HEVC 仕様による refs 制限:**
 
 | 条件                             | 最大 refs 値 | 説明                                     |
 | :------------------------------- | :----------: | :--------------------------------------- |
-| **B-pyramid 有効（デフォルト）** |    **6**     | 全プリセットでデフォルト有効             |
+| **B-pyramid 有効(デフォルト)** |    **6**     | 全プリセットでデフォルト有効             |
 | B-frames 有効、B-pyramid 無効    |      7       | `no-b-pyramid=1` 指定時                  |
 | HEVC 仕様の絶対上限              |      8       | 準拠ストリームの上限                     |
 | libx265 ソフトウェア制限         |      16      | `allow-non-conformance=1` で非準拠許可時 |
@@ -288,22 +288,22 @@ x265 [error]: Lookahead depth must be greater than the max consecutive bframe co
 
 **refs の制限:**
 
-- **推奨: `-refs 6` 以下**（B-pyramid 有効時、デフォルト）
-- `-refs 7` や `-refs 8` を使用する場合は `-x265-params no-b-pyramid=1` が必要（圧縮効率低下のため非推奨）
+- **推奨: `-refs 6` 以下**(B-pyramid 有効時、デフォルト)
+- `-refs 7` や `-refs 8` を使用する場合は `-x265-params no-b-pyramid=1` が必要(圧縮効率低下のため非推奨)
 - `-refs 9` 以上は HEVC 仕様違反のため**必ずエラー**
 
 **bf と rc-lookahead の関係:**
 
 - **必須条件: `rc-lookahead > bf`**
-- ultrafast プリセット（rc-lookahead=5）: `-bf 4` まで
-- veryfast プリセット（rc-lookahead=10）: `-bf 9` まで
-- medium 以上（rc-lookahead=40）: `-bf 39` まで（実用上制限なし）
-- 明示的に指定する場合: `-x265-params rc-lookahead=10` （bf より大きい値）
+- ultrafast プリセット(rc-lookahead=5): `-bf 4` まで
+- veryfast プリセット(rc-lookahead=10): `-bf 9` まで
+- medium 以上(rc-lookahead=40): `-bf 39` まで(実用上制限なし)
+- 明示的に指定する場合: `-x265-params rc-lookahead=10` (bf より大きい値)
 
 **推奨設定:**
 
 - **高速エンコード**: `-preset veryfast -bf 9 -refs 6`
-- **バランス型**: `-preset medium -bf 9 -refs 6`（推奨）
+- **バランス型**: `-preset medium -bf 9 -refs 6`(推奨)
 - **高品質**: `-preset slow -bf 9 -refs 6`
 
 **x265-params 高度なパラメーター:**
@@ -314,7 +314,7 @@ x265 [error]: Lookahead depth must be greater than the max consecutive bframe co
 | **b-pyramid**    |    有効    |   0/1    | B-Frameを参照フレームとして使用。デフォルト有効、無効化で refs 最大7 |
 | **rd**           |     3      |   0-6    | RD最適化レベル。高いほど品質向上、処理時間増                         |
 | **rdoq-level**   |     0      |   0-2    | 量子化RD最適化。2で最高品質                                          |
-| **aq-mode**      |     2      |   0-4    | 適応的量子化モード。3が推奨（エッジベース）                          |
+| **aq-mode**      |     2      |   0-4    | 適応的量子化モード。3が推奨(エッジベース)                          |
 | **aq-strength**  |    1.0     | 0.0-3.0  | 適応的量子化強度                                                     |
 | **psy-rd**       |    2.0     | 0.0-5.0  | 心理視覚RD最適化                                                     |
 | **psy-rdoq**     |    0.0     | 0.0-50.0 | 心理視覚RDOQ最適化                                                   |
@@ -358,7 +358,7 @@ outfile:
 
 **範囲**: bf 1-16, refs 1-6
 **結果**: `-bf 8 -refs 6` がバランスが良い、 `-bf 8-16 -refs 6` は圧縮率は変わらないが実行時間が伸びる傾向
-**注意**: B-pyramid 有効時（デフォルト）は **最大 6** まで
+**注意**: B-pyramid 有効時(デフォルト)は **最大 6** まで
 
 ```yaml
 # for bf in $(seq 1 16); do for refs in $(seq 1 6); do echo "          - -crf 27 -bf ${bf} -refs ${refs}"; done; done
@@ -436,28 +436,28 @@ outfile:
 
 ### 基本情報(libsvtav1-basic-info)
 
-- **フレーム構造**: AV1独自の構造（I/P/B ではなく Key/Inter + Altref）
+- **フレーム構造**: AV1独自の構造(I/P/B ではなく Key/Inter + Altref)
 - **既存フレーム比率**: `I/P/B: 23.0 / 3574.0 / 0.0` ← **B-Frame は存在しない**
 - **既存ベスト**: `-crf 31`, `-crf 35`
-- **重要**: `-bf` オプションは**無効**（AV1 には B-Frame が存在しない）
+- **重要**: `-bf` オプションは**無効**(AV1 には B-Frame が存在しない)
 
 ### パラメーター詳細(libsvtav1-parameter-details)
 
 | パラメーター | デフォルト | 最小値 | 最大値 | 推奨範囲 | 説明                                                           |
 | :----------- | :--------: | :----: | :----: | :------: | :------------------------------------------------------------- |
 | **-crf**     |     35     |   0    |   63   |  25-40   | 品質パラメーター。x264/x265より値域が広く、約+10が同等品質     |
-| **-preset**  |     5      |   0    |   13   |   4-6    | エンコード速度プリセット。**低いほど高品質・低速**（x264と逆） |
-| **-g**       |    自動    |   1    |   -    | 120-300  | GOP サイズ（キーフレーム間隔）。指定なしで自動最適化           |
+| **-preset**  |     5      |   0    |   13   |   4-6    | エンコード速度プリセット。**低いほど高品質・低速**(x264と逆) |
+| **-g**       |    自動    |   1    |   -    | 120-300  | GOP サイズ(キーフレーム間隔)。指定なしで自動最適化           |
 | **-bf**      |    N/A     |   -    |   -    |    -     | **AV1には存在しない**。指定しても無視される                    |
 | **-refs**    |     1      |   1    |   7    |   1-7    | 参照フレーム数。AV1仕様では最大7                               |
 
-**プリセット特性（数値が小さいほど高品質）:**
+**プリセット特性(数値が小さいほど高品質):**
 
 |  Preset   | 特性                   | 推奨用途                     |
 | :-------: | :--------------------- | :--------------------------- |
 |  **0-2**  | 最高品質、非常に低速   | アーカイブ、最終配信マスター |
 |  **3-4**  | 高品質、低速           | 高品質配信                   |
-|  **5-6**  | バランス型（推奨）     | 一般的な配信                 |
+|  **5-6**  | バランス型(推奨)     | 一般的な配信                 |
 |  **7-9**  | 高速、品質低下         | リアルタイムエンコード       |
 | **10-13** | 最高速、大幅な品質低下 | テスト用途のみ               |
 
@@ -465,7 +465,7 @@ outfile:
 
 | パラメーター            | デフォルト | 範囲  | 説明                                       |
 | :---------------------- | :--------: | :---: | :----------------------------------------- |
-| **tune**                |     1      |  0-2  | チューニングモード（0:VQ, 1:PSNR, 2:SSIM） |
+| **tune**                |     1      |  0-2  | チューニングモード(0:VQ, 1:PSNR, 2:SSIM) |
 | **hierarchical-levels** |     4      |  3-5  | Altref階層レベル。高いほど圧縮効率向上     |
 | **film-grain**          |     0      | 0-50  | フィルムグレイン合成強度                   |
 | **film-grain-denoise**  |     0      |  0/1  | フィルムグレイン＋ノイズ除去               |
@@ -473,10 +473,10 @@ outfile:
 | **qm-min**              |     8      | 0-15  | 量子化マトリックス最小値                   |
 | **qm-max**              |     15     | 0-15  | 量子化マトリックス最大値                   |
 | **enable-dlf**          |     1      |  0-2  | デブロッキングループフィルター             |
-| **cdef-level**          |     -1     | -1-5  | CDEF（制約付き方向性強調フィルター）レベル |
+| **cdef-level**          |     -1     | -1-5  | CDEF(制約付き方向性強調フィルター)レベル |
 | **enable-restoration**  |     1      |  0/1  | ループ復元フィルター                       |
-| **tile-rows**           |     0      |  0-6  | タイル行数（並列処理）                     |
-| **tile-columns**        |     0      |  0-6  | タイル列数（並列処理）                     |
+| **tile-rows**           |     0      |  0-6  | タイル行数(並列処理)                     |
+| **tile-columns**        |     0      |  0-6  | タイル列数(並列処理)                     |
 
 ### Phase 1: CRF値探査(libsvtav1-0001-crf)
 
@@ -567,7 +567,7 @@ outfile:
     - -svtav1-params tune=1
     - -svtav1-params tune=2
 
-    # 階層的予測レベル（Altref制御）
+    # 階層的予測レベル(Altref制御)
     - -svtav1-params hierarchical-levels=3
     - -svtav1-params hierarchical-levels=4
     - -svtav1-params hierarchical-levels=5
@@ -591,7 +591,7 @@ outfile:
     - -svtav1-params enable-restoration=0
     - -svtav1-params enable-restoration=1
 
-    # タイル設定（並列処理）
+    # タイル設定(並列処理)
     - -svtav1-params tile-rows=1:tile-columns=1
     - -svtav1-params tile-rows=2:tile-columns=2
 
@@ -616,14 +616,14 @@ outfile:
 
 | パラメーター | デフォルト | 最小値 | 最大値 |      推奨範囲      | Intel SDK    | 説明                                                  |
 | :----------- | :--------: | :----: | :----: | :----------------: | :----------- | :---------------------------------------------------- |
-| **-q:v**     |     -      |   0    |   51   |       18-28        | QPI/QPP/QPB  | CQP（固定QP）。低いほど高品質。I/P/Bで自動調整される  |
-| **-g**       |     -1     |   1    |   -    |      120-300       | GopPicSize   | GOP サイズ（キーフレーム間隔）                        |
+| **-q:v**     |     -      |   0    |   51   |       18-28        | QPI/QPP/QPB  | CQP(固定QP)。低いほど高品質。I/P/Bで自動調整される  |
+| **-g**       |     -1     |   1    |   -    |      120-300       | GopPicSize   | GOP サイズ(キーフレーム間隔)                        |
 | **-bf**      |     -1     |   0    |   16   |        8-16        | GopRefDist-1 | 連続B-Frameの最大数。**QSVでは処理時間変わらず**      |
 | **-refs**    |     0      |   0    |   16   |        4-16        | NumRefFrame  | 参照フレーム数。**QSVでは処理時間変わらず**           |
 | **-preset**  |   medium   |   1    |   7    |    veryslow推奨    | TargetUsage  | エンコード速度プリセット。**QSVでは処理時間ほぼ同じ** |
 | **-profile** |    high    |   -    |   -    | baseline/main/high | CodecProfile | baseline(66), main(77), high(100)                     |
 
-**QP値の自動調整（CQPモード）:**
+**QP値の自動調整(CQPモード):**
 
 | フレームタイプ | QP計算式                             | デフォルトオフセット |
 | :------------- | :----------------------------------- | :------------------: |
@@ -639,20 +639,20 @@ outfile:
 | **adaptive_b**              |     0      |  0/1  | AdaptiveB            | アダプティブB-Frame配置                                  |
 | **b_strategy**              |     0      |  0/1  | BRefType             | B-Frame戦略最適化                                        |
 | **rdo**                     |     0      |  0/1  | RateDistortionOpt    | Rate Distortion最適化                                    |
-| **scenario**                |     0      |  0-8  | ScenarioInfo         | シナリオヒント（0:default, 3:gaming, 4:remote-gaming）   |
+| **scenario**                |     0      |  0-8  | ScenarioInfo         | シナリオヒント(0:default, 3:gaming, 4:remote-gaming)   |
 | **mbbrc**                   |     0      |  0/1  | MBBRC                | マクロブロックレベルBRC                                  |
-| **cavlc**                   |     0      |  0/1  | CAVLC                | CAVLC有効（デフォルトはCABAC）                           |
+| **cavlc**                   |     0      |  0/1  | CAVLC                | CAVLC有効(デフォルトはCABAC)                           |
 | **idr_interval**            |     0      |  0-   | IdrInterval          | IDR間隔                                                  |
-| **dblk_idc**                |     0      |  0-2  | DisableDeblockingIdc | デブロッキング無効（0:有効, 1:無効, 2:スライス境界無効） |
+| **dblk_idc**                |     0      |  0-2  | DisableDeblockingIdc | デブロッキング無効(0:有効, 1:無効, 2:スライス境界無効) |
 | **max_dec_frame_buffering** |     0      | 0-16  | MaxDecFrameBuffering | DPBサイズ                                                |
 | **aud**                     |     0      |  0/1  | AUD                  | Access Unit Delimiter挿入                                |
 | **repeat_pps**              |     0      |  0/1  | RepeatPPS            | PPS繰り返し                                              |
 
-**Look-ahead パラメーター（LA-ICQモード用）:**
+**Look-ahead パラメーター(LA-ICQモード用):**
 
 | パラメーター                | デフォルト |      範囲      | Intel SDK      | 説明                             |
 | :-------------------------- | :--------: | :------------: | :------------- | :------------------------------- |
-| **look_ahead**              |     0      |      0/1       | LookAhead      | Look-ahead有効化（h264_qsv専用） |
+| **look_ahead**              |     0      |      0/1       | LookAhead      | Look-ahead有効化(h264_qsv専用) |
 | **look_ahead_depth**        |     0      |     0-100      | LookAheadDepth | 先読みフレーム数                 |
 | **look_ahead_downsampling** |    auto    | auto/off/2x/4x | LookAheadDS    | 先読み時のダウンサンプリング     |
 
@@ -746,7 +746,7 @@ outfile:
 | パラメーター        | デフォルト | 最小値 | 最大値 |      推奨範囲      | Intel SDK    | 説明                                                    |
 | :------------------ | :--------: | :----: | :----: | :----------------: | :----------- | :------------------------------------------------------ |
 | **-global_quality** |     -      |   1    |   51   |       20-32        | ICQQuality   | ICQ品質値。低いほど高品質。フレーム間で品質を一定に保つ |
-| **-g**              |     -1     |   1    |   -    |      120-300       | GopPicSize   | GOP サイズ（キーフレーム間隔）                          |
+| **-g**              |     -1     |   1    |   -    |      120-300       | GopPicSize   | GOP サイズ(キーフレーム間隔)                          |
 | **-bf**             |     -1     |   0    |   16   |        8-16        | GopRefDist-1 | 連続B-Frameの最大数。**QSVでは処理時間変わらず**        |
 | **-refs**           |     0      |   0    |   16   |        4-16        | NumRefFrame  | 参照フレーム数。**QSVでは処理時間変わらず**             |
 | **-preset**         |   medium   |   1    |   7    |    veryslow推奨    | TargetUsage  | エンコード速度プリセット。**QSVでは処理時間ほぼ同じ**   |
@@ -769,7 +769,7 @@ outfile:
 | **b_strategy**   |     0      |  0/1  | BRefType             | B-Frame戦略最適化                 |
 | **rdo**          |     0      |  0/1  | RateDistortionOpt    | Rate Distortion最適化             |
 | **scenario**     |     0      |  0-8  | ScenarioInfo         | シナリオヒント                    |
-| **cavlc**        |     0      |  0/1  | CAVLC                | CAVLC有効（デフォルトはCABAC）    |
+| **cavlc**        |     0      |  0/1  | CAVLC                | CAVLC有効(デフォルトはCABAC)    |
 | **idr_interval** |     0      |  0-   | IdrInterval          | IDR間隔                           |
 | **dblk_idc**     |     0      |  0-2  | DisableDeblockingIdc | デブロッキング無効                |
 
@@ -824,7 +824,7 @@ outfile:
 ```yaml
 outfile:
   options:
-    # MBBRC（マクロブロックレベルBRC）
+    # MBBRC(マクロブロックレベルBRC)
     - -bf [最適値] -refs [最適値] -mbbrc 1
 
     # アダプティブフレーム配置
@@ -852,7 +852,7 @@ outfile:
 - **ソースコード**: `libavcodec/qsvenc_h264.c`
 - **対応Profile**: baseline(66), main(77), high(100)
 - **対応Preset**: veryslow(1) ~ veryfast(7)
-- **特徴**: Look-ahead機能はh264_qsv専用（hevc_qsv/av1_qsvでは非対応）
+- **特徴**: Look-ahead機能はh264_qsv専用(hevc_qsv/av1_qsvでは非対応)
 
 ### パラメーター詳細(h264-qsv-la-icq-parameter-details)
 
@@ -862,7 +862,7 @@ outfile:
 | **-look_ahead**              |     0      |   0    |   1    |         1          | LookAhead      | Look-ahead有効化。**LA-ICQには必須**             |
 | **-look_ahead_depth**        |     0      |   0    |  100   |       40-100       | LookAheadDepth | 先読みフレーム数。多いほどビット配分最適化       |
 | **-look_ahead_downsampling** |    auto    |   -    |   -    |   auto/off/2x/4x   | LookAheadDS    | 先読み時のダウンサンプリング                     |
-| **-g**                       |     -1     |   1    |   -    |      120-300       | GopPicSize     | GOP サイズ（キーフレーム間隔）                   |
+| **-g**                       |     -1     |   1    |   -    |      120-300       | GopPicSize     | GOP サイズ(キーフレーム間隔)                   |
 | **-bf**                      |     -1     |   0    |   16   |        8-16        | GopRefDist-1   | 連続B-Frameの最大数。**QSVでは処理時間変わらず** |
 | **-refs**                    |     0      |   0    |   16   |        4-16        | NumRefFrame    | 参照フレーム数。**QSVでは処理時間変わらず**      |
 | **-preset**                  |   medium   |   1    |   7    |    veryslow推奨    | TargetUsage    | エンコード速度プリセット                         |
@@ -886,7 +886,7 @@ outfile:
 | **rdo**        |     0      |  0/1  | RateDistortionOpt | Rate Distortion最適化          |
 | **mbbrc**      |     0      |  0/1  | MBBRC             | マクロブロックレベルBRC        |
 | **scenario**   |     0      |  0-8  | ScenarioInfo      | シナリオヒント                 |
-| **cavlc**      |     0      |  0/1  | CAVLC             | CAVLC有効（デフォルトはCABAC） |
+| **cavlc**      |     0      |  0/1  | CAVLC             | CAVLC有効(デフォルトはCABAC) |
 
 ### Phase 1: Quality値探査(h264-qsv-la-icq-0001-quality)
 
@@ -944,7 +944,7 @@ outfile:
 **目的**: 先読みフレーム数と画質の関係を確認
 **結果**: 効果なし preset で設定済み?
 
-### Phase 3: B-Frame 数（最大負荷テスト）(h264-qsv-la-icq-0003-bf-refs)
+### Phase 3: B-Frame 数(最大負荷テスト)(h264-qsv-la-icq-0003-bf-refs)
 
 **範囲**: 4, 6, 8, 10, 12, 14, 16
 
@@ -992,7 +992,7 @@ outfile:
 - **ソースコード**: `libavcodec/qsvenc_hevc.c`
 - **対応Profile**: main(1), main10(2), mainsp(3), rext(4), scc(9)
 - **対応Preset**: veryslow(1) ~ veryfast(7)
-- **フレーム構造**: GPB モード使用（P-Frame を B-Frame として扱う）
+- **フレーム構造**: GPB モード使用(P-Frame を B-Frame として扱う)
 - **既存フレーム比率**: `I/P/B: 15.0 / 0.0 / 3582.0` ← **P が 0 = GPB モード**
 - **既存ベスト**: `-q:v 20 -bf 15 -refs 8 -vf vpp_qsv=format=p010le`
 - **特徴**: hevc_qsvはh264_qsvのlook_ahead非対応。look_ahead_depthはextbrc=1時のみ有効
@@ -1001,13 +1001,13 @@ outfile:
 
 | パラメーター                  | デフォルト | 最小値 | 最大値 |  推奨範囲   | Intel SDK    | 説明                                            |
 | :---------------------------- | :--------: | :----: | :----: | :---------: | :----------- | :---------------------------------------------- |
-| **-q:v**                      |     -      |   0    |   51   |    18-28    | QPI/QPP/QPB  | CQP（固定QP）。低いほど高品質                   |
+| **-q:v**                      |     -      |   0    |   51   |    18-28    | QPI/QPP/QPB  | CQP(固定QP)。低いほど高品質                   |
 | **-gpb**                      |     1      |   0    |   1    |    1推奨    | GPB          | GPBモード。1でP-FrameをB-Frameとして扱う        |
 | **-vf vpp_qsv=format=p010le** |     -      |   -    |   -    |    推奨     | -            | 10bit エンコード。画質向上、ファイルサイズ微増  |
 | **-profile**                  |    main    |   -    |   -    | main/main10 | CodecProfile | main(1), main10(2), mainsp(3), rext(4), scc(9)  |
 | **-tier**                     |    main    |   -    |   -    |  main/high  | Tier         | HEVCティア                                      |
-| **-g**                        |    248     |   1    |   -    |   120-300   | GopPicSize   | GOP サイズ（キーフレーム間隔）                  |
-| **-bf**                       |     -1     |   0    | **15** |    8-15     | GopRefDist-1 | 連続B-Frameの最大数。**最大15**（h264_qsvは16） |
+| **-g**                        |    248     |   1    |   -    |   120-300   | GopPicSize   | GOP サイズ(キーフレーム間隔)                  |
+| **-bf**                       |     -1     |   0    | **15** |    8-15     | GopRefDist-1 | 連続B-Frameの最大数。**最大15**(h264_qsvは16) |
 | **-refs**                     |     0      |   0    |   16   |    4-12     | NumRefFrame  | 参照フレーム数。**QSVでは処理時間変わらず**     |
 
 **GPB モードの効果:**
@@ -1021,8 +1021,8 @@ outfile:
 
 | パラメーター       | デフォルト | 範囲  | Intel SDK            | 説明                                       |
 | :----------------- | :--------: | :---: | :------------------- | :----------------------------------------- |
-| **tile_cols**      |     0      |  0-   | NumTileCols          | タイル列数（並列処理）                     |
-| **tile_rows**      |     0      |  0-   | NumTileRows          | タイル行数（並列処理）                     |
+| **tile_cols**      |     0      |  0-   | NumTileCols          | タイル列数(並列処理)                     |
+| **tile_rows**      |     0      |  0-   | NumTileRows          | タイル行数(並列処理)                     |
 | **rdo**            |     0      |  0/1  | RateDistortionOpt    | Rate Distortion最適化                      |
 | **transform_skip** |     0      |  0/1  | TransformSkip        | 変換スキップモード有効化                   |
 | **adaptive_i**     |     0      |  0/1  | AdaptiveI            | アダプティブI-Frame配置                    |
@@ -1034,12 +1034,12 @@ outfile:
 | **aud**            |     0      |  0/1  | AUD                  | Access Unit Delimiter挿入                  |
 | **pic_timing_sei** |     0      |  0/1  | PicTimingSEI         | タイミングSEI挿入                          |
 
-**Extended BRC パラメーター（ICQモード用）:**
+**Extended BRC パラメーター(ICQモード用):**
 
 | パラメーター         | デフォルト | 範囲  | Intel SDK      | 説明                                 |
 | :------------------- | :--------: | :---: | :------------- | :----------------------------------- |
 | **extbrc**           |     0      |  0/1  | ExtBRC         | 拡張BRC有効化                        |
-| **look_ahead_depth** |     0      | 0-100 | LookAheadDepth | 先読みフレーム数（extbrc時のみ有効） |
+| **look_ahead_depth** |     0      | 0-100 | LookAheadDepth | 先読みフレーム数(extbrc時のみ有効) |
 | **mbbrc**            |     0      |  0/1  | MBBRC          | マクロブロックレベルBRC              |
 
 ### Phase 1: QP値探査(hevc-qsv-cqp-0001-qp)
@@ -1070,10 +1070,10 @@ outfile:
 ```yaml
 outfile:
   options:
-    # GPBモード無効（従来のP/B分離）
+    # GPBモード無効(従来のP/B分離)
     - -gpb 0
 
-    # GPBモード有効（デフォルト、Pを全てBとして扱う）
+    # GPBモード有効(デフォルト、Pを全てBとして扱う)
     - -gpb 1
 ```
 
@@ -1083,7 +1083,7 @@ outfile:
 **予想される結果**:
 
 - `-gpb 0`: P-Frame と B-Frame が分離される
-- `-gpb 1`: P-Frame = 0, B-Frame が増える（既存データと一致）
+- `-gpb 1`: P-Frame = 0, B-Frame が増える(既存データと一致)
 
 ### Phase 3: 10bit対応テスト(hevc-qsv-cqp-0003-10bit)
 
@@ -1096,7 +1096,7 @@ outfile:
 **目的**: 10bit エンコードの画質向上効果を確認
 **結果**: 10bit は測定出来ず
 
-### Phase 4: B-Frame 数（最大負荷テスト）(hevc-qsv-cqp-0004-bf-refs)
+### Phase 4: B-Frame 数(最大負荷テスト)(hevc-qsv-cqp-0004-bf-refs)
 
 **範囲**: 8, 10, 12, 14, 15
 
@@ -1147,7 +1147,7 @@ outfile:
 - **ソースコード**: `libavcodec/qsvenc_hevc.c`
 - **対応Profile**: main(1), main10(2), mainsp(3), rext(4), scc(9)
 - **対応Preset**: veryslow(1) ~ veryfast(7)
-- **フレーム構造**: GPB モード使用（P-Frame を B-Frame として扱う）
+- **フレーム構造**: GPB モード使用(P-Frame を B-Frame として扱う)
 - **既存フレーム比率**: `I/P/B: 15.0 / 0.0 / 3582.0` ← **P が 0 = GPB モード**
 - **既存ベスト**: `-global_quality 21 -bf 15 -refs 8 -vf vpp_qsv=format=p010le`
 - **特徴**: hevc_qsvはh264_qsvのlook_ahead非対応。look_ahead_depthはextbrc=1時のみ有効
@@ -1160,7 +1160,7 @@ outfile:
 | **-gpb**                      |     1      |   0    |   1    |    1推奨    | GPB (ExtCO3) | GPBモード。1でP-FrameをB-Frameとして扱う       |
 | **-vf vpp_qsv=format=p010le** |     -      |   -    |   -    |    推奨     | FourCC       | 10bit エンコード。画質向上、ファイルサイズ微増 |
 | **-profile**                  |    main    |   -    |   -    | main/main10 | CodecProfile | HEVCプロファイル。10bit時はmain10              |
-| **-g**                        |     -1     |   1    |   -    |   120-300   | GopPicSize   | GOP サイズ（キーフレーム間隔）                 |
+| **-g**                        |     -1     |   1    |   -    |   120-300   | GopPicSize   | GOP サイズ(キーフレーム間隔)                 |
 | **-bf**                       |     -1     |   0    |   15   |    8-15     | GopRefDist-1 | 連続B-Frameの最大数。**hevc_qsvは最大15**      |
 | **-refs**                     |     0      |   1    |   16   |    4-12     | NumRefFrame  | 参照フレーム数。**QSVでは処理時間変わらず**    |
 
@@ -1169,10 +1169,10 @@ outfile:
 | パラメーター         | デフォルト |  範囲  | Intel SDK          | 説明                                   |
 | :------------------- | :--------: | :----: | :----------------- | :------------------------------------- |
 | **extbrc**           |     0      |  0/1   | ExtBRC (ExtCO2)    | Extended BRC。品質制御改善             |
-| **look_ahead_depth** |     0      | 20-100 | LookAheadDepth     | 先読みフレーム数（extbrc=1時のみ有効） |
+| **look_ahead_depth** |     0      | 20-100 | LookAheadDepth     | 先読みフレーム数(extbrc=1時のみ有効) |
 | **mbbrc**            |     0      |  0/1   | MBBRC (ExtCO2)     | マクロブロックレベルBRC                |
-| **tile_cols**        |     0      |  0-20  | NumTileColumns     | タイル列数（並列処理）                 |
-| **tile_rows**        |     0      |  0-22  | NumTileRows        | タイル行数（並列処理）                 |
+| **tile_cols**        |     0      |  0-20  | NumTileColumns     | タイル列数(並列処理)                 |
+| **tile_rows**        |     0      |  0-22  | NumTileRows        | タイル行数(並列処理)                 |
 | **rdo**              |     0      |  0/1   | -                  | Rate Distortion最適化                  |
 | **adaptive_i**       |     0      |  0/1   | AdaptiveI (ExtCO2) | アダプティブI-Frame配置                |
 | **adaptive_b**       |     0      |  0/1   | AdaptiveB (ExtCO2) | アダプティブB-Frame配置                |
@@ -1211,10 +1211,10 @@ outfile:
 ```yaml
 outfile:
   options:
-    # GPBモード無効（従来のP/B分離）
+    # GPBモード無効(従来のP/B分離)
     - -gpb 0
 
-    # GPBモード有効（デフォルト、Pを全てBとして扱う）
+    # GPBモード有効(デフォルト、Pを全てBとして扱う)
     - -gpb 1
 ```
 
@@ -1231,7 +1231,7 @@ outfile:
 
 **結果**: 10Bit にしたほうが良い
 
-### Phase 4: B-Frame 数（最大負荷テスト）(hevc-qsv-icq-0004-bf)
+### Phase 4: B-Frame 数(最大負荷テスト)(hevc-qsv-icq-0004-bf)
 
 ```yaml
 # for bf in $(seq 1 15); do for refs in $(seq 1 15); do echo "          - -bf ${bf} -refs ${refs}"; done; done
@@ -1267,7 +1267,7 @@ outfile:
     # Extended BRC
     - -extbrc 1
 
-    # Look-ahead depth（extbrc有効時のみ）
+    # Look-ahead depth(extbrc有効時のみ)
     - -extbrc 1 -look_ahead_depth 20
     - -extbrc 1 -look_ahead_depth 40
     - -extbrc 1 -look_ahead_depth 60
@@ -1303,20 +1303,20 @@ outfile:
 - **ソースコード**: `libavcodec/qsvenc_av1.c`
 - **対応Profile**: main(1)のみ
 - **対応Preset**: veryslow(1) ~ veryfast(7)
-- **フレーム構造**: AV1独自の構造（I/P/B ではなく Key/Inter + Altref）
+- **フレーム構造**: AV1独自の構造(I/P/B ではなく Key/Inter + Altref)
 - **既存フレーム比率**: `I/P/B: 15.0 / 3582.0 / 0.0` ← **B-Frame は存在しない**
 - **既存ベスト**: `-q:v 53 -vf vpp_qsv=format=p010le`
-- **重要**: `-bf` オプションは**無効**（AV1 には B-Frame が存在しない）
-- **特徴**: av1_qsvは多くのオプションが非対応（rdo, mbbrc, max_qp_*, scenario等）。-refs最大7
+- **重要**: `-bf` オプションは**無効**(AV1 には B-Frame が存在しない)
+- **特徴**: av1_qsvは多くのオプションが非対応(rdo, mbbrc, max_qp_*, scenario等)。-refs最大7
 
 ### パラメーター詳細(av1-qsv-cqp-parameter-details)
 
 | パラメーター                  | デフォルト | 最小値 | 最大値 | 推奨範囲 | Intel SDK    | 説明                                           |
 | :---------------------------- | :--------: | :----: | :----: | :------: | :----------- | :--------------------------------------------- |
-| **-q:v**                      |     -      |   0    |  255   |  45-80   | QPI          | CQP（固定QP）。低いほど高品質。AV1は値域が広い |
+| **-q:v**                      |     -      |   0    |  255   |  45-80   | QPI          | CQP(固定QP)。低いほど高品質。AV1は値域が広い |
 | **-vf vpp_qsv=format=p010le** |     -      |   -    |   -    |   推奨   | -            | 10bit エンコード。AV1では10bit推奨             |
 | **-profile**                  |    main    |   -    |   -    |   main   | CodecProfile | main(1)のみ対応                                |
-| **-g**                        |     -1     |   1    |   -    | 120-300  | GopPicSize   | GOP サイズ（キーフレーム間隔）                 |
+| **-g**                        |     -1     |   1    |   -    | 120-300  | GopPicSize   | GOP サイズ(キーフレーム間隔)                 |
 | **-bf**                       |    N/A     |   -    |   -    |    -     | -            | **AV1には存在しない**。指定しても無視される    |
 | **-refs**                     |     0      |   0    | **7**  |   1-7    | NumRefFrame  | 参照フレーム数。**AV1仕様では最大7**           |
 
@@ -1337,17 +1337,17 @@ av1_qsv は h264_qsv/hevc_qsv と比較してオプションが限定的です�
 | P-pyramid (p_strategy)           |    ❌     | 非対応 |
 | IDR間隔 (idr_interval)           |    ❌     | 非対応 |
 
-**QSV 高度なパラメーター（対応するもの）:**
+**QSV 高度なパラメーター(対応するもの):**
 
 | パラメーター         | デフォルト | 範囲  | Intel SDK      | 説明                                         |
 | :------------------- | :--------: | :---: | :------------- | :------------------------------------------- |
-| **tile_cols**        |     0      |  0-   | NumTileCols    | タイル列数（並列処理）                       |
-| **tile_rows**        |     0      |  0-   | NumTileRows    | タイル行数（並列処理）                       |
+| **tile_cols**        |     0      |  0-   | NumTileCols    | タイル列数(並列処理)                       |
+| **tile_rows**        |     0      |  0-   | NumTileRows    | タイル行数(並列処理)                       |
 | **adaptive_i**       |     0      |  0/1  | AdaptiveI      | アダプティブKeyFrame配置                     |
 | **adaptive_b**       |     0      |  0/1  | AdaptiveB      | アダプティブInter-Frame配置                  |
-| **b_strategy**       |     0      |  0/1  | BRefType       | B-Frame戦略（AV1のAltrefフレーム制御に影響） |
+| **b_strategy**       |     0      |  0/1  | BRefType       | B-Frame戦略(AV1のAltrefフレーム制御に影響) |
 | **extbrc**           |     0      |  0/1  | ExtBRC         | 拡張BRC有効化                                |
-| **look_ahead_depth** |     0      | 0-100 | LookAheadDepth | 先読みフレーム数（extbrc時のみ有効）         |
+| **look_ahead_depth** |     0      | 0-100 | LookAheadDepth | 先読みフレーム数(extbrc時のみ有効)         |
 | **low_delay_brc**    |     0      |  0/1  | LowDelayBRC    | 低遅延BRC                                    |
 | **max_frame_size**   |     0      |  0-   | MaxFrameSize   | 最大フレームサイズ                           |
 
@@ -1405,7 +1405,7 @@ outfile:
 ```yaml
 outfile:
   options:
-    # タイル設定（並列処理）
+    # タイル設定(並列処理)
     - -q:v [最適値] -vf vpp_qsv=format=p010le -tile_cols 1
     - -q:v [最適値] -vf vpp_qsv=format=p010le -tile_rows 1
     - -q:v [最適値] -vf vpp_qsv=format=p010le -tile_cols 2
@@ -1435,11 +1435,11 @@ outfile:
 - **ソースコード**: `libavcodec/qsvenc_av1.c`
 - **対応Profile**: main(1)のみ
 - **対応Preset**: veryslow(1) ~ veryfast(7)
-- **フレーム構造**: AV1独自の構造（I/P/B ではなく Key/Inter + Altref）
+- **フレーム構造**: AV1独自の構造(I/P/B ではなく Key/Inter + Altref)
 - **既存フレーム比率**: `I/P/B: 15.0 / 3582.0 / 0.0` ← **B-Frame は存在しない**
 - **既存ベスト**: `-global_quality 24 -vf vpp_qsv=format=p010le`
-- **重要**: `-bf` オプションは**無効**（AV1 には B-Frame が存在しない）
-- **特徴**: av1_qsvは多くのオプションが非対応（rdo, mbbrc, max_qp_*, scenario等）。-refs最大7
+- **重要**: `-bf` オプションは**無効**(AV1 には B-Frame が存在しない)
+- **特徴**: av1_qsvは多くのオプションが非対応(rdo, mbbrc, max_qp_*, scenario等)。-refs最大7
 
 ### パラメーター詳細(av1-qsv-icq-parameter-details)
 
@@ -1448,25 +1448,25 @@ outfile:
 | **-global_quality**           |     -      |   1    |   51   |  20-32   | ICQQuality   | ICQ品質値。低いほど高品質                   |
 | **-vf vpp_qsv=format=p010le** |     -      |   -    |   -    |   推奨   | -            | 10bit エンコード。AV1では10bit推奨          |
 | **-profile**                  |    main    |   -    |   -    |   main   | CodecProfile | main(1)のみ対応                             |
-| **-g**                        |     -1     |   1    |   -    | 120-300  | GopPicSize   | GOP サイズ（キーフレーム間隔）              |
+| **-g**                        |     -1     |   1    |   -    | 120-300  | GopPicSize   | GOP サイズ(キーフレーム間隔)              |
 | **-bf**                       |    N/A     |   -    |   -    |    -     | -            | **AV1には存在しない**。指定しても無視される |
 | **-refs**                     |     0      |   0    | **7**  |   1-7    | NumRefFrame  | 参照フレーム数。**AV1仕様では最大7**        |
 
-**QSV 高度なパラメーター（対応するもの）:**
+**QSV 高度なパラメーター(対応するもの):**
 
 | パラメーター         | デフォルト | 範囲  | Intel SDK      | 説明                                         |
 | :------------------- | :--------: | :---: | :------------- | :------------------------------------------- |
 | **extbrc**           |     0      |  0/1  | ExtBRC         | Extended BRC。品質制御改善                   |
-| **look_ahead_depth** |     0      | 0-100 | LookAheadDepth | 先読みフレーム数（extbrc=1時のみ有効）       |
-| **tile_cols**        |     0      |  0-   | NumTileCols    | タイル列数（並列処理）                       |
-| **tile_rows**        |     0      |  0-   | NumTileRows    | タイル行数（並列処理）                       |
+| **look_ahead_depth** |     0      | 0-100 | LookAheadDepth | 先読みフレーム数(extbrc=1時のみ有効)       |
+| **tile_cols**        |     0      |  0-   | NumTileCols    | タイル列数(並列処理)                       |
+| **tile_rows**        |     0      |  0-   | NumTileRows    | タイル行数(並列処理)                       |
 | **adaptive_i**       |     0      |  0/1  | AdaptiveI      | アダプティブKeyFrame配置                     |
 | **adaptive_b**       |     0      |  0/1  | AdaptiveB      | アダプティブInter-Frame配置                  |
-| **b_strategy**       |     0      |  0/1  | BRefType       | B-Frame戦略（AV1のAltrefフレーム制御に影響） |
+| **b_strategy**       |     0      |  0/1  | BRefType       | B-Frame戦略(AV1のAltrefフレーム制御に影響) |
 | **low_delay_brc**    |     0      |  0/1  | LowDelayBRC    | 低遅延BRC                                    |
 | **max_frame_size**   |     0      |  0-   | MaxFrameSize   | 最大フレームサイズ                           |
 
-**非対応オプション（av1_qsv固有の制限）:**
+**非対応オプション(av1_qsv固有の制限):**
 
 CQPモードと同様、以下のオプションは av1_qsv では非対応です：
 
@@ -1534,7 +1534,7 @@ outfile:
     # Extended BRC
     - -global_quality [最適値] -vf vpp_qsv=format=p010le -extbrc 1
 
-    # Look-ahead depth（extbrc有効時のみ）
+    # Look-ahead depth(extbrc有効時のみ)
     - -global_quality [最適値] -vf vpp_qsv=format=p010le -extbrc 1 -look_ahead_depth 20
     - -global_quality [最適値] -vf vpp_qsv=format=p010le -extbrc 1 -look_ahead_depth 40
     - -global_quality [最適値] -vf vpp_qsv=format=p010le -extbrc 1 -look_ahead_depth 60
@@ -1547,7 +1547,7 @@ outfile:
 ```yaml
 outfile:
   options:
-    # タイル設定（並列処理）
+    # タイル設定(並列処理)
     - -global_quality [最適値] -vf vpp_qsv=format=p010le -tile_cols 1
     - -global_quality [最適値] -vf vpp_qsv=format=p010le -tile_rows 1
     - -global_quality [最適値] -vf vpp_qsv=format=p010le -tile_cols 2
@@ -1584,13 +1584,13 @@ outfile:
 
 ### 3. 圧縮率の評価
 
-- **compress_rate**: 低いほど高圧縮（目標: 0.7以下）
+- **compress_rate**: 低いほど高圧縮(目標: 0.7以下)
 - **bitrate**: 低いほど良い
 
 ### 4. 処理時間の考慮
 
 - **ソフトウェアエンコード**: 処理時間と画質のバランスを考慮
-- **ハードウェアエンコード（QSV）**: 処理時間はほぼ一定のため最大負荷設定を積極的に試す
+- **ハードウェアエンコード(QSV)**: 処理時間はほぼ一定のため最大負荷設定を積極的に試す
 
 ### 5. フレーム構造の確認
 
@@ -1598,7 +1598,7 @@ outfile:
 
 - **H.264**: I/P/B の比率を確認
 - **HEVC (GPB=1)**: P が 0、B が増加していることを確認
-- **AV1**: B が 0 であることを確認（正常）
+- **AV1**: B が 0 であることを確認(正常)
 
 ### 6. 結果の記録
 
@@ -1612,8 +1612,8 @@ outfile:
 
 #### **refs の制限**
 
-- **B-pyramid 有効時（デフォルト）**: 最大 **6** まで
-- **B-pyramid 無効時**: 最大 **7** まで（`-x265-params no-b-pyramid=1`）
+- **B-pyramid 有効時(デフォルト)**: 最大 **6** まで
+- **B-pyramid 無効時**: 最大 **7** まで(`-x265-params no-b-pyramid=1`)
 - **HEVC 仕様**: 絶対上限 **8**
 - **違反時のエラー**: `NumPocTotalCurr (total references) is non-compliant`
 
@@ -1635,7 +1635,7 @@ outfile:
 
 - **B-Frame は存在しない**: `-bf` オプションは無視される
 - **Altref フレーム**: エンコーダーが自動的に最適な構造を決定
-- **階層的予測**: `hierarchical-levels` パラメータで制御可能（libsvtav1）
+- **階層的予測**: `hierarchical-levels` パラメータで制御可能(libsvtav1)
 - **refs の上限**: AV1 仕様では最大 **7** まで
 
 ### HEVC QSV の GPB モード
@@ -1648,9 +1648,9 @@ outfile:
 
 - **処理時間がほぼ一定**: プリセットや負荷を変えても処理時間はほとんど変わらない
 - **最大負荷設定推奨**: `-bf 16` (H.264), `-refs 16` (H.264), `-look_ahead_depth 100` などの最大値を積極的に試す
-- **タイル並列処理**: `-tile_cols`, `-tile_rows` で並列処理を有効化できる（HEVC/AV1のみ）
+- **タイル並列処理**: `-tile_cols`, `-tile_rows` で並列処理を有効化できる(HEVC/AV1のみ)
 
-#### コーデック別パラメーター制限（ソースコード検証済み）
+#### コーデック別パラメーター制限(ソースコード検証済み)
 
 | パラメーター          |  h264_qsv  |   hevc_qsv   |   av1_qsv    | 備考                              |
 | --------------------- | :--------: | :----------: | :----------: | --------------------------------- |
