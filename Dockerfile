@@ -1,7 +1,7 @@
 #- -------------------------------------------------------------------------------------------------
 #- Runner
 #-
-FROM ghcr.io/naa0yama/join_logo_scp_trial:v25.10.00-beta22-ubuntu2404
+FROM ghcr.io/naa0yama/join_logo_scp_trial:v25.10.00-beta22-ubuntu2404@sha256:eaf606642d056b243e8a72ce139610ce4412ed94b45a1b662f4c3907abad929d
 ARG DEBIAN_FRONTEND=noninteractive \
 	USER_NAME=cuser \
 	USER_UID=60001 \
