@@ -47,7 +47,7 @@ setuptools-scm = "9.2.0"
 
 [tool.poetry.group.linting.dependencies]
 mypy = "~1.18.0"
-ruff = "^0.11.0"
+ruff = "^0.16.0"
 types-requests = "^2.32.0.20250306"
 
 [tool.poetry.group.tests.dependencies]
